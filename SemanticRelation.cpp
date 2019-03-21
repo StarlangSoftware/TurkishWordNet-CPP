@@ -96,3 +96,11 @@ string SemanticRelation::getTypeAsString(){
 string SemanticRelation::to_string() {
     return getTypeAsString() + "->" + name;
 }
+
+string SemanticRelation::to_xml() {
+    if (toIndex == 0){
+        return "<SR>" + name + "<TYPE>" + getTypeAsString() + "</TYPE></SR>";
+    } else {
+        return "<SR>" + name + "<TYPE>" + getTypeAsString() + "</TYPE>" + "<TO>" + std::to_string(toIndex) + "</TO>";
+    }
+}

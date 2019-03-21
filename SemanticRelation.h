@@ -24,8 +24,9 @@ public:
     int getToIndex();
     SemanticRelationType getRelationType();
     void setRelationType(SemanticRelationType relationType);
-    string getTypeAsString();
+    string getTypeAsString() override;
     string to_string();
+    string to_xml() override;
 };
 
 

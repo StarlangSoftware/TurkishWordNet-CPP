@@ -16,6 +16,8 @@ public:
     explicit Relation(string name);
     string getName();
     void setName(string name);
+    virtual string getTypeAsString() = 0;
+    virtual string to_xml() = 0;
     bool operator==(const Relation &anotherRelation) const{
         return (name == anotherRelation.name);
     }
