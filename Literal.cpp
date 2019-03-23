@@ -60,9 +60,10 @@ bool Literal::containsRelation(Relation *relation) {
 
 bool Literal::containsRelationType(SemanticRelationType semanticRelationType) {
     for (Relation* relation : relations){
-        auto* semanticRelation = (SemanticRelation*) relation;
-        if (semanticRelation->getRelationType() == semanticRelationType){
-            return true;
+        if (SemanticRelation* semanticRelation = dynamic_cast<SemanticRelation*>(relation)){
+            if (semanticRelation->getRelationType() == semanticRelationType){
+                return true;
+            }
         }
     }
     return false;
@@ -101,5 +102,4 @@ void Literal::saveAsXml(ofstream& outfile){
         outfile << r->to_xml();
     }
     outfile << "</LITERAL>";
-
 }

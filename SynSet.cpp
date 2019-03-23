@@ -1,0 +1,273 @@
+//
+// Created by Olcay Taner YILDIZ on 2019-03-23.
+//
+
+#include <Word.h>
+#include "SynSet.h"
+#include "InterlingualRelation.h"
+#include "SemanticRelation.h"
+
+SynSet::SynSet(string id) {
+    this->id = move(id);
+}
+
+string SynSet::getId() {
+    return id;
+}
+
+void SynSet::setId(string id) {
+    this->id = move(id);
+}
+
+void SynSet::setDefinition(string definition) {
+    this->definition = Word::split(move(definition), "|");
+}
+
+void SynSet::removeDefinition(string definition) {
+    string longDefinition = getLongDefinition();
+    if (Word::startsWith(longDefinition, definition + "|")){
+        setDefinition(Word::replaceAll(longDefinition, definition + "|", ""));
+    } else {
+        if (Word::endsWith(longDefinition, "|" + definition)){
+            setDefinition(Word::replaceAll(longDefinition, "|" + definition, ""));
+        } else {
+            if (longDefinition.find("|" + definition + "|") != string::npos){
+                setDefinition(Word::replaceAll(longDefinition, "|" + definition, ""));
+            }
+        }
+    }
+}
+
+void SynSet::removeSameDefinitions() {
+    string definition = getLongDefinition();
+    bool removed = true;
+    while (!definition.empty() && removed){
+        removed = false;
+        for (int j = 0; j < getSynonym().literalSize(); j++){
+            Literal literal = getSynonym().getLiteral(j);
+            string word = literal.getName();
+            string uppercaseWord = Word::substring(literal.getName(), 0, 1) + Word::substring(literal.getName(), 1);
+            if (definition.find("|" + word + "|") != string::npos){
+                definition = Word::replaceAll(definition, "|" + word + "|", "|");
+                removed = true;
+            }
+            if (definition.find("|" + word + "; ") != string::npos){
+                definition = Word::replaceAll(definition, "|" + word + "; ", "|");
+                removed = true;
+            }
+            if (definition.find("|" + uppercaseWord + "|") != string::npos){
+                definition = Word::replaceAll(definition, "|" + uppercaseWord + "|", "|");
+                removed = true;
+            }
+            if (definition.find("|" + uppercaseWord + "; ") != string::npos){
+                definition = Word::replaceAll(definition, "|" + uppercaseWord + "; ", "|");
+                removed = true;
+            }
+            if (definition.find("; " + word + "|") != string::npos){
+                definition = Word::replaceAll(definition, "; " + word + "|", "|");
+                removed = true;
+            }
+            if (definition.find("; " + uppercaseWord + "|") != string::npos){
+                definition = Word::replaceAll(definition, "; " + uppercaseWord + "|", "|");
+                removed = true;
+            }
+            if (Word::endsWith(definition, "; " + word)){
+                definition = Word::replaceAll(definition, "; " + word, "");
+                removed = true;
+            }
+            if (Word::endsWith(definition, "|" + word)){
+                definition = Word::replaceAll(definition, "|" + word, "");
+                removed = true;
+            }
+            if (Word::startsWith(definition, word + "|")){
+                definition = Word::replaceAll(definition, word + "|", "");
+                removed = true;
+            }
+            if (Word::startsWith(definition, uppercaseWord + "|")){
+                definition = Word::replaceAll(definition, uppercaseWord + "|", "");
+                removed = true;
+            }
+            if (Word::endsWith(definition, "; " + uppercaseWord)){
+                definition = Word::replaceAll(definition, "; " + uppercaseWord, "");
+                removed = true;
+            }
+            if (Word::endsWith(definition, "|" + uppercaseWord)){
+                definition = Word::replaceAll(definition, "|" + uppercaseWord, "");
+                removed = true;
+            }
+            if (definition == word){
+                definition = "";
+                removed = true;
+            }
+        }
+    }
+    if (!definition.empty() && definition.length() > 0){
+        setDefinition(definition);
+    } else {
+        setDefinition("NO DEFINITION");
+    }
+}
+
+string SynSet::getDefinition() {
+    if (!definition.empty()){
+        return definition.at(0);
+    }
+}
+
+string SynSet::representative() {
+    return getSynonym().getLiteral(0).getName();
+}
+
+string SynSet::getLongDefinition() {
+    if (!definition.empty()){
+        string longDefinition = definition.at(0);
+        for (int i = 1; i < definition.size(); i++){
+            longDefinition += "|" + definition[i];
+        }
+        return longDefinition;
+    } else {
+        return "";
+    }
+}
+
+void SynSet::sortDefinitions() {
+    if (!definition.empty()){
+        for (int i = 0; i < definition.size(); i++){
+            for (int j = i + 1; j < definition.size(); j++){
+                if (Word::size(definition[i]) < Word::size(definition[j])){
+                    swap(definition[i], definition[j]);
+                }
+            }
+        }
+    }
+}
+
+string SynSet::getDefinition(int index) {
+    if (index < definition.size() && index >= 0){
+        return definition[index];
+    } else {
+        return "";
+    }
+}
+
+int SynSet::numberOfDefinitions() {
+    return definition.size();
+}
+
+void SynSet::setExample(string example) {
+    this->example = move(example);
+}
+
+string SynSet::getExample() {
+    return example;
+}
+
+void SynSet::setBcs(int bcs) {
+    if (bcs >= 1 && bcs <= 3){
+        this->bcs = bcs;
+    }
+}
+
+int SynSet::getBcs() {
+    return bcs;
+}
+
+void SynSet::setPos(Pos pos) {
+    this->pos = pos;
+}
+
+Pos SynSet::getPos() {
+    return pos;
+}
+
+void SynSet::setNote(string note) {
+    this->note = move(note);
+}
+
+string SynSet::getNote() {
+    return note;
+}
+
+void SynSet::addRelation(Relation *relation) {
+    relations.emplace_back(relation);
+}
+
+void SynSet::removeRelation(Relation *relation) {
+    for (auto it = relations.begin() ; it != relations.end(); ++it){
+        if (*(*it) == *relation){
+            relations.erase(it);
+            break;
+        }
+    }
+}
+
+void SynSet::removeRelation(string name) {
+    for (auto it = relations.begin() ; it != relations.end(); ++it){
+        if ((*it)->getName() == name){
+            relations.erase(it);
+            break;
+        }
+    }
+}
+
+Relation *SynSet::getRelation(int index) {
+    return relations.at(index);
+}
+
+vector<string> SynSet::getInterlingual() {
+    vector<string> result;
+    for (auto &i : relations) {
+        if (auto * semanticRelation = dynamic_cast<InterlingualRelation*>(i)){
+            auto * relation = (InterlingualRelation*) i;
+            if (relation->getType() == InterlingualDependencyType::SYNONYM){
+                result.emplace_back(relation->getName());
+            }
+        }
+    }
+    return result;
+}
+
+int SynSet::relationSize() {
+    return relations.size();
+}
+
+void SynSet::addLiteral(Literal literal) {
+    synonym.addLiteral(move(literal));
+}
+
+Synonym SynSet::getSynonym() {
+    return synonym;
+}
+
+bool SynSet::containsSameLiteral(SynSet synSet) {
+    for (int i = 0; i < synonym.literalSize(); i++){
+        string literal1 = synonym.getLiteral(i).getName();
+        for (int j = 0; j < synSet.getSynonym().literalSize(); j++){
+            string literal2 = synSet.getSynonym().getLiteral(j).getName();
+            if (literal1 == literal2){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool SynSet::containsRelation(Relation *relation) {
+    for (Relation* r : relations) {
+        if (*r == *relation){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool SynSet::containsRelationType(SemanticRelationType semanticRelationType) {
+    for (Relation* relation : relations) {
+        if (auto * semanticRelation = dynamic_cast<SemanticRelation*>(relation)){
+            if (semanticRelation->getRelationType() == semanticRelationType){
+                return true;
+            }
+        }
+    }
+    return false;
+}
