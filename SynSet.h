@@ -23,6 +23,9 @@ private:
     string note;
     int bcs;
 public:
+    bool operator==(const SynSet &anotherSynSet) const{
+        return (id == anotherSynSet.id);
+    }
     explicit SynSet(string id);
     string getId();
     void setId(string id);
@@ -54,6 +57,10 @@ public:
     bool containsSameLiteral(SynSet synSet);
     bool containsRelation(Relation* relation);
     bool containsRelationType(SemanticRelationType semanticRelationType);
+    void mergeSynSet(SynSet synSet);
+    string to_string();
+    void saveAsXml(ofstream& outfile);
+    void saveAsLmf(ofstream& outfile, string ili);
 };
 
 

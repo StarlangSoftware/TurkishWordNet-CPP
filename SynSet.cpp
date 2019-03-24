@@ -2,6 +2,7 @@
 // Created by Olcay Taner YILDIZ on 2019-03-23.
 //
 
+#include <fstream>
 #include <Word.h>
 #include "SynSet.h"
 #include "InterlingualRelation.h"
@@ -270,4 +271,155 @@ bool SynSet::containsRelationType(SemanticRelationType semanticRelationType) {
         }
     }
     return false;
+}
+
+void SynSet::mergeSynSet(SynSet synSet) {
+    for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
+        if (!synonym.contains(synSet.getSynonym().getLiteral(i))){
+            synonym.addLiteral(synSet.getSynonym().getLiteral(i));
+        }
+    }
+    if (definition.empty() && !synSet.getDefinition().empty()){
+        setDefinition(synSet.getDefinition());
+    } else {
+        if (!definition.empty() && !synSet.getDefinition().empty() && getLongDefinition() != synSet.getLongDefinition()){
+            setDefinition(getLongDefinition() + "|" + synSet.getLongDefinition());
+        }
+    }
+    if (synSet.relationSize() != 0){
+        for (int i = 0; i < synSet.relationSize(); i++){
+            if (!containsRelation(synSet.getRelation(i))){
+                addRelation(synSet.getRelation(i));
+            }
+        }
+    }
+    if (example.empty() && !synSet.example.empty()){
+        example = synSet.example;
+    }
+}
+
+string SynSet::to_string() {
+    if (!definition.empty()){
+        return definition[0];
+    } else {
+        return representative();
+    }
+}
+
+void SynSet::saveAsXml(ofstream& outfile) {
+    outfile << "<SYNSET>";
+    outfile << "<ID>" + id + "</ID>";
+    synonym.saveAsXml(outfile);
+    if (pos == Pos::NOUN){
+        outfile << "<POS>n</POS>";
+    } else {
+        if (pos == Pos::ADJECTIVE){
+            outfile << "<POS>a</POS>";
+        } else {
+            if (pos == Pos::VERB){
+                outfile << "<POS>v</POS>";
+            } else {
+                if (pos == Pos::ADVERB){
+                    outfile << "<POS>b</POS>";
+                } else {
+                    if (pos == Pos::CONJUNCTION){
+                        outfile << "<POS>c</POS>";
+                    } else {
+                        if (pos == Pos::PRONOUN){
+                            outfile << "<POS>r</POS>";
+                        } else {
+                            if (pos == Pos::INTERJECTION){
+                                outfile << "<POS>i</POS>";
+                            } else {
+                                if (pos == Pos::PREPOSITION){
+                                    outfile << "<POS>p</POS>";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for (Relation* r:relations){
+        outfile << r->to_xml();
+    }
+    if (!definition.empty()){
+        outfile << "<DEF>" + getLongDefinition() + "</DEF>";
+    }
+    if (!example.empty()){
+        outfile << "<EXAMPLE>" + example + "</EXAMPLE>";
+    }
+    outfile << "</SYNSET>\n";
+}
+
+void SynSet::saveAsLmf(ofstream& outfile, string ili) {
+    string posChar;
+    switch (pos){
+        case Pos::NOUN:
+            posChar = "n";
+            break;
+        case Pos::ADJECTIVE:
+            posChar = "a";
+            break;
+        case Pos::ADVERB:
+            posChar = "r";
+            break;
+        case Pos::VERB:
+            posChar = "v";
+            break;
+        default:
+            posChar = "x";
+            break;
+    }
+    outfile << "\t<Synset id=\"" + id + "\" ili=\"" + ili + "\" partOfSpeech=\"" + posChar + "\">\n";
+    if (!getLongDefinition().empty()){
+        string longDefinition = getLongDefinition();
+        if (longDefinition.find("\"") != string::npos){
+            longDefinition = Word::replaceAll(longDefinition, "\"", "&quot;");
+        }
+        outfile << "\t\t<Definition>" + longDefinition + "</Definition>\n";
+    }
+    for (Relation* r:relations){
+        if (SemanticRelation* semanticRelation = dynamic_cast<SemanticRelation*>(r)){
+            switch (((SemanticRelation*) r)->getRelationType()){
+                case SemanticRelationType::MEMBER_TOPIC:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"has_domain_topic\"/>\n";
+                    break;
+                case SemanticRelationType::MEMBER_REGION:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"has_domain_region\"/>\n";
+                    break;
+                case SemanticRelationType::PART_HOLONYM:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"holo_part\"/>\n";
+                    break;
+                case SemanticRelationType::PART_MERONYM:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"mero_part\"/>\n";
+                    break;
+                case SemanticRelationType::MEMBER_HOLONYM:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"holo_member\"/>\n";
+                    break;
+                case SemanticRelationType::MEMBER_MERONYM:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"mero_member\"/>\n";
+                    break;
+                case SemanticRelationType::SUBSTANCE_HOLONYM:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"holo_substance\"/>\n";
+                    break;
+                case SemanticRelationType::SUBSTANCE_MERONYM:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"mero_substance\"/>\n";
+                    break;
+                case SemanticRelationType::ALSO_SEE:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"also\"/>\n";
+                    break;
+                case SemanticRelationType::DERIVATION_RELATED:
+                    break;
+                default:
+                    outfile << "\t\t<SynsetRelation target=\"" + r->getName() + "\" relType=\"" + ((SemanticRelation*) r)->getTypeAsString() + "\"/>\n";
+                    break;
+            }
+        }
+    }
+    if (!example.empty()){
+        outfile << "\t\t<Example>" + getExample() + "</Example>\n";
+    }
+    outfile << "\t</Synset>\n";
 }
