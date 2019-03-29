@@ -26,6 +26,7 @@ public:
     bool operator==(const SynSet &anotherSynSet) const{
         return (id == anotherSynSet.id);
     }
+    SynSet() = default;
     explicit SynSet(string id);
     string getId();
     void setId(string id);

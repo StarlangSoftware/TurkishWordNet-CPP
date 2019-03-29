@@ -23,6 +23,7 @@ public:
     bool operator==(const Literal &anotherLiteral) const{
         return (name == anotherLiteral.name && sense == anotherLiteral.sense);
     }
+    Literal() = default;
     Literal(string name, int sense, string synSetId);
     string getSynSetId();
     string getName();
