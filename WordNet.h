@@ -30,6 +30,7 @@ private:
     void noDefinitionCheck();
     void semanticRelationNoIDCheck();
     void sameSemanticRelationCheck();
+    pair<string, int> findLCS(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2);
 public:
     void readWordNet(string fileName);
     void readExceptionFile(string exceptionFileName);
@@ -64,6 +65,11 @@ public:
     void check(WordNet secondWordNet);
     void saveAsXml(string fileName);
     int size();
+    int findPathLength(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2);
+    int findLCSdepth(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2);
+    string findLCSid(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2);
+    vector<string> findPathToRoot(SynSet* synset);
+    SynSet* percolateUp(SynSet* root);
 };
 
 

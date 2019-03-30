@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <utility>
 #include "WordNet.h"
 #include "XmlDocument.h"
 #include "SemanticRelation.h"
@@ -776,4 +777,62 @@ void WordNet::saveAsXml(string fileName) {
 
 int WordNet::size() {
     return synSetList.size();
+}
+
+int WordNet::findPathLength(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2) {
+    // There might not be a path between nodes, due to missing nodes. Keep track of that as well. Break when the LCS if found.
+    for (int i = 0; i < pathToRootOfSynSet1.size(); i++) {
+        auto foundIndex = find(pathToRootOfSynSet2.begin(), pathToRootOfSynSet2.end(), pathToRootOfSynSet1.at(i));
+        if (foundIndex != pathToRootOfSynSet2.cend()) {
+            // Index of two lists - 1 is equal to path length. If there is not path, return -1
+            return i + foundIndex - pathToRootOfSynSet2.begin() - 1;
+        }
+    }
+    return -1;
+}
+
+int WordNet::findLCSdepth(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2){
+    pair<string, int> temp = findLCS(move(pathToRootOfSynSet1), move(pathToRootOfSynSet2));
+    if (!temp.first.empty()) {
+        return temp.second;
+    }
+    return -1;
+}
+
+string WordNet::findLCSid(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2){
+    pair<string, int> temp = findLCS(move(pathToRootOfSynSet1), move(pathToRootOfSynSet2));
+    return temp.first;
+}
+
+pair<string, int> WordNet::findLCS(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2){
+    for (int i = 0; i < pathToRootOfSynSet1.size(); i++) {
+        string LCSid = pathToRootOfSynSet1.at(i);
+        if (find(pathToRootOfSynSet2.begin(), pathToRootOfSynSet2.end(), LCSid) != pathToRootOfSynSet2.cend()) {
+            return pair(LCSid, pathToRootOfSynSet1.size() - i + 1);
+        }
+    }
+    return pair("", -1);
+}
+
+vector<string> WordNet::findPathToRoot(SynSet* synSet){
+    vector<string> pathToRoot;
+    while (synSet != nullptr) {
+        pathToRoot.emplace_back(synSet->getId());
+        synSet = percolateUp(synSet);
+    }
+    return pathToRoot;
+}
+
+SynSet* WordNet::percolateUp(SynSet* root){
+    for (int i = 0; i < root->relationSize(); i++) {
+        Relation* r = root->getRelation(i);
+        if (auto* relation = dynamic_cast<SemanticRelation*>(r)) {
+            if (relation->getRelationType() == SemanticRelationType::HYPERNYM) {
+                root = getSynSetWithId(r->getName());
+                // return even if one hypernym is found.
+                return root;
+            }
+        }
+    }
+    return nullptr;
 }
