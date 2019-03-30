@@ -21,20 +21,21 @@ void WordNet::readWordNet(string fileName) {
         partNode = synSetNode->getFirstChild();
         while (partNode != nullptr){
             if (partNode->getName() == "ID"){
-                currentSynSet = SynSet(partNode->getFirstChild()->getPcData());
+                currentSynSet = SynSet(partNode->getPcData());
                 addSynSet(currentSynSet);
+                cout << currentSynSet.getId() << "\n";
             } else {
                 if (partNode->getName() == "DEF"){
-                    currentSynSet.setDefinition(partNode->getFirstChild()->getPcData());
+                    currentSynSet.setDefinition(partNode->getPcData());
                 } else {
                     if (partNode->getName() == "EXAMPLE"){
-                        currentSynSet.setExample(partNode->getFirstChild()->getPcData());
+                        currentSynSet.setExample(partNode->getPcData());
                     } else {
                         if (partNode->getName() == "BCS") {
-                            currentSynSet.setBcs(std::stoi(partNode->getFirstChild()->getPcData()));
+                            currentSynSet.setBcs(std::stoi(partNode->getPcData()));
                         } else {
                             if (partNode->getName() == "POS") {
-                                switch (partNode->getFirstChild()->getPcData()[0]) {
+                                switch (partNode->getPcData()[0]) {
                                     case 'a':
                                         currentSynSet.setPos(Pos::ADJECTIVE);
                                         break;
@@ -68,9 +69,9 @@ void WordNet::readWordNet(string fileName) {
                                         if (typeNode != nullptr && typeNode->getName() == "TYPE") {
                                             toNode = typeNode->getNextSibling();
                                             if (toNode != nullptr && typeNode->getName() == "TO") {
-                                                currentSynSet.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getFirstChild()->getPcData(), stoi(toNode->getFirstChild()->getPcData())));
+                                                currentSynSet.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData(), stoi(toNode->getPcData())));
                                             } else {
-                                                currentSynSet.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getFirstChild()->getPcData()));
+                                                currentSynSet.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
                                             }
                                         }
                                     }
@@ -87,7 +88,7 @@ void WordNet::readWordNet(string fileName) {
                                                 }
                                                 synSetList.emplace_back(currentSynSet);
                                                 interlingualList.insert_or_assign(interlingualId, synSetList);
-                                                currentSynSet.addRelation(new InterlingualRelation(interlingualId, typeNode->getFirstChild()->getPcData()));
+                                                currentSynSet.addRelation(new InterlingualRelation(interlingualId, typeNode->getPcData()));
                                             }
                                         }
                                     } else {
@@ -100,15 +101,15 @@ void WordNet::readWordNet(string fileName) {
                                                         senseNode = textNode->getNextSibling();
                                                         if (senseNode != nullptr) {
                                                             if (senseNode->getName() == "SENSE" && senseNode->getFirstChild() != nullptr) {
-                                                                currentLiteral = Literal(textNode->getPcData(), stoi(senseNode->getFirstChild()->getPcData()), currentSynSet.getId());
+                                                                currentLiteral = Literal(textNode->getPcData(), stoi(senseNode->getPcData()), currentSynSet.getId());
                                                                 currentSynSet.addLiteral(currentLiteral);
                                                                 addLiteralToLiteralList(currentLiteral);
                                                                 srNode = senseNode->getNextSibling();
                                                                 while (srNode != nullptr) {
                                                                     if (srNode->getName() == "SR") {
-                                                                        typeNode = srNode->getFirstChild()->getNextSibling();
+                                                                        typeNode = srNode->getNextSibling();
                                                                         if (typeNode != nullptr && typeNode->getName() == "TYPE") {
-                                                                            currentLiteral.addRelation(new SemanticRelation(srNode->getFirstChild()->getPcData(), typeNode->getFirstChild()->getPcData()));
+                                                                            currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
                                                                         }
                                                                     }
                                                                     srNode = srNode->getNextSibling();
@@ -121,7 +122,7 @@ void WordNet::readWordNet(string fileName) {
                                             }
                                         } else {
                                             if (partNode->getName() == "SNOTE") {
-                                                currentSynSet.setNote(partNode->getFirstChild()->getPcData());
+                                                currentSynSet.setNote(partNode->getPcData());
                                             }
                                         }
                                     }
