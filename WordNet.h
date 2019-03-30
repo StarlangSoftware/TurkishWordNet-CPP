@@ -23,6 +23,13 @@ private:
     unordered_map<string, ExceptionalWord> exceptionList;
     unordered_map<string, vector<SynSet>> interlingualList;
     void addSynSetsWithLiteralToList(vector<SynSet> result, string literal, Pos pos);
+    void multipleInterlingualRelationCheck1(WordNet secondWordNet);
+    void multipleInterlingualRelationCheck2(WordNet secondWordNet);
+    void sameLiteralSameSenseCheck();
+    void sameLiteralSameSynSetCheck();
+    void noDefinitionCheck();
+    void semanticRelationNoIDCheck();
+    void sameSemanticRelationCheck();
 public:
     void readWordNet(string fileName);
     void readExceptionFile(string exceptionFileName);
@@ -35,8 +42,8 @@ public:
     vector<string> getLiteralList();
     void addSynSet(SynSet synSet);
     void removeSynSet(SynSet s);
-    SynSet getSynSetWithId(string synSetId);
-    SynSet getSynSetWithLiteral(string literal, int sense);
+    SynSet* getSynSetWithId(string synSetId);
+    SynSet* getSynSetWithLiteral(string literal, int sense);
     int numberOfSynSetsWithLiteral(string literal);
     vector<SynSet> getSynSetsWithPartOfSpeech(Pos pos);
     vector<Literal> getLiteralsWithName(string literal);
@@ -54,6 +61,9 @@ public:
     vector<SynSet> constructIdiomSynSets(MorphologicalParse morphologicalParse1, MorphologicalParse morphologicalParse2, MetamorphicParse metaParse1, MetamorphicParse metaParse2, FsmMorphologicalAnalyzer fsm);
     void sortDefinitions();
     vector<SynSet> getInterlingual(string synSetId);
+    void check(WordNet secondWordNet);
+    void saveAsXml(string fileName);
+    int size();
 };
 
 

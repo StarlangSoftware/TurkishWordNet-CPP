@@ -61,7 +61,6 @@ public:
     void mergeSynSet(SynSet synSet);
     string to_string();
     void saveAsXml(ofstream& outfile);
-    void saveAsLmf(ofstream& outfile, string ili);
 };
 
 

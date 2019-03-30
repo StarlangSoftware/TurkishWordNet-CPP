@@ -2,6 +2,7 @@
 // Created by olcay on 29.03.2019.
 //
 
+#include <iostream>
 #include "WordNet.h"
 #include "XmlDocument.h"
 #include "SemanticRelation.h"
@@ -200,12 +201,14 @@ void WordNet::mergeSynSets(string synSetFile) {
     while (inputFile.good()) {
         getline(inputFile, line);
         vector<string> synSetIds = Word::split(line);
-        SynSet mergedOne = getSynSetWithId(synSetIds[0]);
-        for (int i = 1; i < synSetIds.size(); i++){
-            SynSet toBeMerged = getSynSetWithId(synSetIds[i]);
-            if (mergedOne.getPos() == toBeMerged.getPos()){
-                mergedOne.mergeSynSet(toBeMerged);
-                removeSynSet(toBeMerged);
+        SynSet* mergedOne = getSynSetWithId(synSetIds[0]);
+        if (mergedOne != nullptr){
+            for (int i = 1; i < synSetIds.size(); i++){
+                SynSet* toBeMerged = getSynSetWithId(synSetIds[i]);
+                if (mergedOne->getPos() == toBeMerged->getPos()){
+                    mergedOne->mergeSynSet(*toBeMerged);
+                    removeSynSet(*toBeMerged);
+                }
             }
         }
     }
@@ -236,11 +239,15 @@ void WordNet::removeSynSet(SynSet s) {
     synSetList.erase(s.getId());
 }
 
-SynSet WordNet::getSynSetWithId(string synSetId) {
-    return synSetList.find(synSetId)->second;
+SynSet* WordNet::getSynSetWithId(string synSetId) {
+    if (synSetList.find(synSetId) != synSetList.end()){
+        return &(synSetList.find(synSetId)->second);
+    } else {
+        return nullptr;
+    }
 }
 
-SynSet WordNet::getSynSetWithLiteral(string literal, int sense) {
+SynSet* WordNet::getSynSetWithLiteral(string literal, int sense) {
     vector<Literal> literals;
     literals = literalList.find(literal)->second;
     for (Literal current : literals){
@@ -248,6 +255,7 @@ SynSet WordNet::getSynSetWithLiteral(string literal, int sense) {
             return getSynSetWithId(current.getSynSetId());
         }
     }
+    return nullptr;
 }
 
 int WordNet::numberOfSynSetsWithLiteral(string literal) {
@@ -277,22 +285,24 @@ vector<Literal> WordNet::getLiteralsWithName(string literal) {
 }
 
 void WordNet::addSynSetsWithLiteralToList(vector<SynSet> result, string literal, Pos pos) {
-    SynSet synSet;
+    SynSet* synSet;
     for (Literal current : literalList.find(literal)->second){
         synSet = getSynSetWithId(current.getSynSetId());
-        if (synSet.getPos() == pos){
-            result.emplace_back(synSet);
+        if (synSet != nullptr && synSet->getPos() == pos){
+            result.emplace_back(*synSet);
         }
     }
 }
 
 vector<SynSet> WordNet::getSynSetsWithLiteral(string literal) {
-    SynSet synSet;
+    SynSet* synSet;
     vector<SynSet> result;
     if (literalList.find(literal) != literalList.end()){
         for (Literal current : literalList.find(literal)->second){
             synSet = getSynSetWithId(current.getSynSetId());
-            result.emplace_back(synSet);
+            if (synSet != nullptr){
+                result.emplace_back(*synSet);
+            }
         }
     }
     return result;
@@ -358,18 +368,22 @@ vector<SynSet> WordNet::getSynSetsWithPossiblyModifiedLiteral(string literal, Po
 }
 
 void WordNet::addReverseRelation(SynSet synSet, SemanticRelation semanticRelation) {
-    SynSet otherSynSet = getSynSetWithId(semanticRelation.getName());
-    Relation* otherRelation = new SemanticRelation(synSet.getId(), SemanticRelation::reverse(semanticRelation.getRelationType()));
-    if (!otherSynSet.containsRelation(otherRelation)){
-        otherSynSet.addRelation(otherRelation);
+    SynSet* otherSynSet = getSynSetWithId(semanticRelation.getName());
+    if (otherSynSet != nullptr){
+        Relation* otherRelation = new SemanticRelation(synSet.getId(), SemanticRelation::reverse(semanticRelation.getRelationType()));
+        if (!otherSynSet->containsRelation(otherRelation)){
+            otherSynSet->addRelation(otherRelation);
+        }
     }
 }
 
 void WordNet::removeReverseRelation(SynSet synSet, SemanticRelation semanticRelation) {
-    SynSet otherSynSet = getSynSetWithId(semanticRelation.getName());
-    Relation* otherRelation = new SemanticRelation(synSet.getId(), SemanticRelation::reverse(semanticRelation.getRelationType()));
-    if (otherSynSet.containsRelation(otherRelation)){
-        otherSynSet.removeRelation(otherRelation);
+    SynSet* otherSynSet = getSynSetWithId(semanticRelation.getName());
+    if (otherSynSet != nullptr){
+        Relation* otherRelation = new SemanticRelation(synSet.getId(), SemanticRelation::reverse(semanticRelation.getRelationType()));
+        if (otherSynSet->containsRelation(otherRelation)){
+            otherSynSet->removeRelation(otherRelation);
+        }
     }
 }
 
@@ -409,40 +423,40 @@ vector<SynSet> WordNet::constructSynSets(string word, MorphologicalParse parse, 
     vector<SynSet> result;
     if (parse.size() > 0){
         if (parse.isProperNoun()){
-            result.emplace_back(getSynSetWithLiteral("(özel isim)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(özel isim)", 1));
         }
         if (parse.isTime()){
-            result.emplace_back(getSynSetWithLiteral("(zaman)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(zaman)", 1));
         }
         if (parse.isDate()){
-            result.emplace_back(getSynSetWithLiteral("(tarih)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(tarih)", 1));
         }
         if (parse.isHashTag()){
-            result.emplace_back(getSynSetWithLiteral("(hashtag)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(hashtag)", 1));
         }
         if (parse.isEmail()){
-            result.emplace_back(getSynSetWithLiteral("(eposta)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(eposta)", 1));
         }
         if (parse.isOrdinal()){
-            result.emplace_back(getSynSetWithLiteral("(sayı sıra sıfatı)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(sayı sıra sıfatı)", 1));
         }
         if (parse.isPercent()){
-            result.emplace_back(getSynSetWithLiteral("(yüzde)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(yüzde)", 1));
         }
         if (parse.isFraction()){
-            result.emplace_back(getSynSetWithLiteral("(kesir sayı)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(kesir sayı)", 1));
         }
         if (parse.isRange()){
-            result.emplace_back(getSynSetWithLiteral("(sayı aralığı)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(sayı aralığı)", 1));
         }
         if (parse.isReal()){
-            result.emplace_back(getSynSetWithLiteral("(reel sayı)", 1));
+            result.emplace_back(*getSynSetWithLiteral("(reel sayı)", 1));
         }
         if (!parse.isPunctuation() && !parse.isCardinal() && !parse.isReal()){
             unordered_set<string> possibleWords = fsm.getPossibleWords(parse, metaParse);
-            for (string possibleWord : possibleWords){
+            for (const string &possibleWord : possibleWords){
                 vector<SynSet> synSets = getSynSetsWithLiteral(possibleWord);
-                if (synSets.size() > 0){
+                if (!synSets.empty()){
                     for (SynSet synSet : synSets){
                         if (parse.getPos() == "NOUN" || parse.getPos() == "ADVERB" || parse.getPos() == "VERB" || parse.getPos() == "ADJ" || parse.getPos() == "CONJ"){
                             if (synSet.getPos() == Pos::NOUN){
@@ -482,8 +496,8 @@ vector<SynSet> WordNet::constructSynSets(string word, MorphologicalParse parse, 
                     }
                 }
             }
-            if (result.size() == 0){
-                for (string possibleWord : possibleWords){
+            if (result.empty()){
+                for (const string &possibleWord : possibleWords){
                     vector<SynSet> synSets = getSynSetsWithLiteral(possibleWord);
                     result.insert(result.end(), synSets.begin(), synSets.end());
                 }
@@ -492,8 +506,8 @@ vector<SynSet> WordNet::constructSynSets(string word, MorphologicalParse parse, 
             vector<SynSet> synSets = getSynSetsWithLiteral(word);
             result.insert(result.end(), synSets.begin(), synSets.end());
         }
-        if (parse.isCardinal() && result.size() == 0){
-            result.emplace_back(getSynSetWithLiteral("(tam sayı)", 1));
+        if (parse.isCardinal() && result.empty()){
+            result.emplace_back(*getSynSetWithLiteral("(tam sayı)", 1));
         }
     } else {
         vector<SynSet> synSets = getSynSetsWithLiteral(word);
@@ -508,13 +522,15 @@ WordNet::constructIdiomLiterals(MorphologicalParse morphologicalParse1, Morpholo
                                 MetamorphicParse metaParse2, MetamorphicParse metaParse3,
                                 FsmMorphologicalAnalyzer fsm) {
     vector<Literal> result;
-    unordered_set<string> possibleWords1 = fsm.getPossibleWords(morphologicalParse1, metaParse1);
-    unordered_set<string> possibleWords2 = fsm.getPossibleWords(morphologicalParse2, metaParse2);
-    unordered_set<string> possibleWords3 = fsm.getPossibleWords(morphologicalParse3, metaParse3);
-    for (string possibleWord1 : possibleWords1){
-        for (string possibleWord2 : possibleWords2){
-            for (string possibleWord3 : possibleWords3) {
-                vector<Literal> literals = getLiteralsWithName(possibleWord1 + " " + possibleWord2 + " " + possibleWord3);
+    unordered_set<string> possibleWords1 = fsm.getPossibleWords(move(morphologicalParse1), move(metaParse1));
+    unordered_set<string> possibleWords2 = fsm.getPossibleWords(move(morphologicalParse2), move(metaParse2));
+    unordered_set<string> possibleWords3 = fsm.getPossibleWords(move(morphologicalParse3), move(metaParse3));
+    for (const string &possibleWord1 : possibleWords1){
+        for (const string &possibleWord2 : possibleWords2){
+            for (const string &possibleWord3 : possibleWords3) {
+                string idiom;
+                idiom.append(possibleWord1).append(" ").append(possibleWord2).append(" ").append(possibleWord3);
+                vector<Literal> literals = getLiteralsWithName(idiom);
                 result.insert(result.end(), literals.begin(), literals.end());
             }
         }
@@ -527,14 +543,16 @@ WordNet::constructIdiomSynSets(MorphologicalParse morphologicalParse1, Morpholog
                                MorphologicalParse morphologicalParse3, MetamorphicParse metaParse1,
                                MetamorphicParse metaParse2, MetamorphicParse metaParse3, FsmMorphologicalAnalyzer fsm) {
     vector<SynSet> result;
-    unordered_set<string> possibleWords1 = fsm.getPossibleWords(morphologicalParse1, metaParse1);
-    unordered_set<string> possibleWords2 = fsm.getPossibleWords(morphologicalParse2, metaParse2);
-    unordered_set<string> possibleWords3 = fsm.getPossibleWords(morphologicalParse3, metaParse3);
-    for (string possibleWord1 : possibleWords1){
-        for (string possibleWord2 : possibleWords2){
-            for (string possibleWord3 : possibleWords3) {
-                if (numberOfSynSetsWithLiteral(possibleWord1 + " " + possibleWord2 + " " + possibleWord3) > 0) {
-                    vector<SynSet> synSets = getSynSetsWithLiteral(possibleWord1 + " " + possibleWord2 + " " + possibleWord3);
+    unordered_set<string> possibleWords1 = fsm.getPossibleWords(move(morphologicalParse1), move(metaParse1));
+    unordered_set<string> possibleWords2 = fsm.getPossibleWords(move(morphologicalParse2), move(metaParse2));
+    unordered_set<string> possibleWords3 = fsm.getPossibleWords(move(morphologicalParse3), move(metaParse3));
+    for (const string &possibleWord1 : possibleWords1){
+        for (const string &possibleWord2 : possibleWords2){
+            for (const string &possibleWord3 : possibleWords3) {
+                string idiom;
+                idiom.append(possibleWord1).append(" ").append(possibleWord2).append(" ").append(possibleWord3);
+                if (numberOfSynSetsWithLiteral(idiom) > 0) {
+                    vector<SynSet> synSets = getSynSetsWithLiteral(idiom);
                     result.insert(result.end(), synSets.begin(), synSets.end());
                 }
             }
@@ -548,11 +566,13 @@ WordNet::constructIdiomLiterals(MorphologicalParse morphologicalParse1, Morpholo
                                 MetamorphicParse metaParse1, MetamorphicParse metaParse2,
                                 FsmMorphologicalAnalyzer fsm) {
     vector<Literal> result;
-    unordered_set<string> possibleWords1 = fsm.getPossibleWords(morphologicalParse1, metaParse1);
-    unordered_set<string> possibleWords2 = fsm.getPossibleWords(morphologicalParse2, metaParse2);
-    for (string possibleWord1 : possibleWords1){
-        for (string possibleWord2 : possibleWords2){
-            vector<Literal> literals = getLiteralsWithName(possibleWord1 + " " + possibleWord2);
+    unordered_set<string> possibleWords1 = fsm.getPossibleWords(move(morphologicalParse1), move(metaParse1));
+    unordered_set<string> possibleWords2 = fsm.getPossibleWords(move(morphologicalParse2), move(metaParse2));
+    for (const string &possibleWord1 : possibleWords1){
+        for (const string &possibleWord2 : possibleWords2){
+            string idiom;
+            idiom.append(possibleWord1).append(" ").append(possibleWord2);
+            vector<Literal> literals = getLiteralsWithName(idiom);
             result.insert(result.end(), literals.begin(), literals.end());
         }
     }
@@ -563,12 +583,14 @@ vector<SynSet>
 WordNet::constructIdiomSynSets(MorphologicalParse morphologicalParse1, MorphologicalParse morphologicalParse2,
                                MetamorphicParse metaParse1, MetamorphicParse metaParse2, FsmMorphologicalAnalyzer fsm) {
     vector<SynSet> result;
-    unordered_set<string> possibleWords1 = fsm.getPossibleWords(morphologicalParse1, metaParse1);
-    unordered_set<string> possibleWords2 = fsm.getPossibleWords(morphologicalParse2, metaParse2);
-    for (string possibleWord1 : possibleWords1){
-        for (string possibleWord2 : possibleWords2){
-            if (numberOfSynSetsWithLiteral(possibleWord1 + " " + possibleWord2) > 0) {
-                vector<SynSet> synSets = getSynSetsWithLiteral(possibleWord1 + " " + possibleWord2);
+    unordered_set<string> possibleWords1 = fsm.getPossibleWords(move(morphologicalParse1), move(metaParse1));
+    unordered_set<string> possibleWords2 = fsm.getPossibleWords(move(morphologicalParse2), move(metaParse2));
+    for (const string &possibleWord1 : possibleWords1){
+        for (const string &possibleWord2 : possibleWords2){
+            string idiom;
+            idiom.append(possibleWord1).append(" ").append(possibleWord2);
+            if (numberOfSynSetsWithLiteral(idiom) > 0) {
+                vector<SynSet> synSets = getSynSetsWithLiteral(idiom);
                 result.insert(result.end(), synSets.begin(), synSets.end());
             }
         }
@@ -588,4 +610,170 @@ vector<SynSet> WordNet::getInterlingual(string synSetId) {
     } else {
         return vector<SynSet>();
     }
+}
+
+void WordNet::multipleInterlingualRelationCheck1(WordNet secondWordNet) {
+    for (SynSet synSet : getSynSetList()){
+        vector<string> interlingual = synSet.getInterlingual();
+        if (interlingual.size() > 1){
+            for (const string &s : interlingual){
+                SynSet* second = secondWordNet.getSynSetWithId(s);
+                if (second != nullptr){
+                    cout << synSet.getId() << "\t" << synSet.getSynonym().to_string() << "\t" << synSet.getDefinition() << "\t" << second->getId() << "\t" << second->getSynonym().to_string() << "\t" << second->getDefinition();
+                }
+            }
+        }
+    }
+}
+
+void WordNet::multipleInterlingualRelationCheck2(WordNet secondWordNet) {
+    for (auto& iterator : interlingualList){
+        string s = iterator.first;
+        if (interlingualList.find(s)->second.size() > 1){
+            SynSet* second = secondWordNet.getSynSetWithId(s);
+            if (second != nullptr){
+                for (SynSet synSet : interlingualList.find(s)->second){
+                    cout << synSet.getId() << "\t" << synSet.getSynonym().to_string() << "\t" << synSet.getDefinition() << "\t" << second->getId() << "\t" << second->getSynonym().to_string() << "\t" << second->getDefinition();
+                }
+            }
+        }
+    }
+}
+
+void WordNet::sameLiteralSameSenseCheck() {
+    for (auto& iterator : literalList){
+        string name = iterator.first;
+        vector<Literal> literals = literalList.find(name)->second;
+        for (int i = 0; i < literals.size(); i++){
+            for (int j = i + 1; j < literals.size(); j++){
+                if (literals.at(i).getSense() == literals.at(j).getSense() && literals.at(i).getName() == literals.at(j).getName()){
+                    cout << "Literal " << name << " has same senses.";
+                }
+            }
+        }
+    }
+}
+
+struct synSetSizeComparator{
+    bool operator() (SynSet synSetA, SynSet synSetB){
+        return synSetA.getSynonym().literalSize() < synSetB.getSynonym().literalSize();
+    }
+};
+
+void WordNet::sameLiteralSameSynSetCheck() {
+    vector<SynSet> synsets;
+    for (SynSet synSet : getSynSetList()){
+        bool found = false;
+        for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
+            Literal literal1 = synSet.getSynonym().getLiteral(i);
+            for (int j = i + 1; j < synSet.getSynonym().literalSize(); j++){
+                Literal literal2 = synSet.getSynonym().getLiteral(j);
+                if (literal1.getName() == literal2.getName()){
+                    synsets.emplace_back(synSet);
+                    found = true;
+                    break;
+                }
+            }
+            if (found){
+                break;
+            }
+        }
+    }
+    stable_sort(synsets.begin(), synsets.end(), synSetSizeComparator());
+    for (SynSet synSet : synsets){
+        cout << synSet.getDefinition();
+    }
+}
+
+void WordNet::noDefinitionCheck() {
+    for (SynSet synSet : getSynSetList()){
+        if (synSet.getDefinition().empty()){
+            cout << "SynSet " << synSet.getId() << " has no definition " << synSet.getSynonym().to_string();
+        }
+    }
+}
+
+void WordNet::semanticRelationNoIDCheck() {
+    for (SynSet synSet : getSynSetList()){
+        for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
+            Literal literal = synSet.getSynonym().getLiteral(i);
+            for (int j = 0; j < literal.relationSize(); j++){
+                Relation* relation = literal.getRelation(j);
+                if (getSynSetWithId(relation->getName()) == nullptr){
+                    literal.removeRelation(relation);
+                    j--;
+                    cout << "Relation " << relation->getName() << " of Synset " << synSet.getId() << " does not exists " << synSet.getSynonym().to_string();
+                }
+            }
+        }
+        for (int j = 0; j < synSet.relationSize(); j++){
+            Relation* relation = synSet.getRelation(j);
+            if (auto* semanticRelation = dynamic_cast<SemanticRelation*>(relation)){
+                if (getSynSetWithId(relation->getName()) == nullptr){
+                    synSet.removeRelation(relation);
+                    j--;
+                    cout << "Relation " << relation->getName() << " of Synset " << synSet.getId() << " does not exists " << synSet.getSynonym().to_string();
+                }
+            }
+        }
+    }
+}
+
+void WordNet::sameSemanticRelationCheck() {
+    for (SynSet synSet : getSynSetList()){
+        for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
+            Literal literal = synSet.getSynonym().getLiteral(i);
+            for (int j = 0; j < literal.relationSize(); j++){
+                Relation* relation = literal.getRelation(j);
+                Relation* same = nullptr;
+                for (int k = j + 1; k < literal.relationSize(); k++){
+                    if (relation->getName() == literal.getRelation(k)->getName()){
+                        cout << relation->getName() << "--" << literal.getRelation(k)->getName() << " are same relation for synset " << synSet.getId();
+                        same = literal.getRelation(k);
+                    }
+                }
+                if (same != nullptr){
+                    literal.removeRelation(same);
+                }
+            }
+        }
+        for (int j = 0; j < synSet.relationSize(); j++){
+            Relation* relation = synSet.getRelation(j);
+            Relation* same = nullptr;
+            for (int k = j + 1; k < synSet.relationSize(); k++){
+                if (relation->getName() == synSet.getRelation(k)->getName()){
+                    cout << relation->getName() << "--" << synSet.getRelation(k)->getName() << " are same relation for synset " << synSet.getId();
+                    same = synSet.getRelation(k);
+                }
+            }
+            if (same != nullptr){
+                synSet.removeRelation(same);
+            }
+        }
+    }
+}
+
+void WordNet::check(WordNet secondWordNet) {
+    //multipleInterlingualRelationCheck1(secondWordNet);
+    sameLiteralSameSynSetCheck();
+    sameLiteralSameSenseCheck();
+    semanticRelationNoIDCheck();
+    sameSemanticRelationCheck();
+    noDefinitionCheck();
+    //multipleInterlingualRelationCheck2(secondWordNet);
+}
+
+void WordNet::saveAsXml(string fileName) {
+    ofstream outFile;
+    outFile.open(fileName, ofstream::out);
+    outFile << "<SYNSETS>\n";
+    for (SynSet synSet : getSynSetList()){
+        synSet.saveAsXml(outFile);
+    }
+    outFile << "</SYNSETS>\n";
+    outFile.close();
+}
+
+int WordNet::size() {
+    return synSetList.size();
 }
