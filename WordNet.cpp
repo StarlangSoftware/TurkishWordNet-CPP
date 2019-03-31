@@ -64,7 +64,7 @@ void WordNet::readWordNet(string fileName) {
                                     typeNode = partNode->getFirstChild();
                                     if (typeNode != nullptr && typeNode->getName() == "TYPE") {
                                         toNode = typeNode->getNextSibling();
-                                        if (toNode != nullptr && typeNode->getName() == "TO") {
+                                        if (toNode != nullptr && toNode->getName() == "TO") {
                                             currentSynSet->second.addRelation(new SemanticRelation(partNode->getPcData(), typeNode->getPcData(), stoi(toNode->getPcData())));
                                         } else {
                                             currentSynSet->second.addRelation(new SemanticRelation(partNode->getPcData(), typeNode->getPcData()));
@@ -97,7 +97,12 @@ void WordNet::readWordNet(string fileName) {
                                                                 if (srNode->getName() == "SR") {
                                                                     typeNode = srNode->getFirstChild();
                                                                     if (typeNode != nullptr && typeNode->getName() == "TYPE") {
-                                                                        currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
+                                                                        toNode = typeNode->getNextSibling();
+                                                                        if (toNode != nullptr && toNode->getName() == "TO") {
+                                                                            currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData(), stoi(toNode->getPcData())));
+                                                                        } else {
+                                                                            currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
+                                                                        }
                                                                     }
                                                                 }
                                                                 srNode = srNode->getNextSibling();
@@ -167,8 +172,8 @@ WordNet::WordNet() {
 }
 
 WordNet::WordNet(string fileName) {
-    readWordNet(move(fileName));
     readExceptionFile("english_exception.xml");
+    readWordNet(move(fileName));
 }
 
 WordNet::WordNet(string fileName, string exceptionFileName) {
