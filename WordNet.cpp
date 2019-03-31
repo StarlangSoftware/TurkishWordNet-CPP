@@ -10,8 +10,8 @@
 #include "InterlingualRelation.h"
 
 void WordNet::readWordNet(string fileName) {
-    XmlElement *rootNode, *synSetNode, *partNode, *ilrNode, *srNode, *typeNode, *toNode, *literalNode, *textNode, *senseNode;
-    SynSet currentSynSet;
+    XmlElement *rootNode, *synSetNode, *partNode, *srNode, *typeNode, *toNode, *literalNode, *senseNode;
+    map<string, SynSet>::iterator currentSynSet;
     Literal currentLiteral;
     XmlDocument doc = XmlDocument(move(fileName));
     doc.parse();
@@ -21,100 +21,89 @@ void WordNet::readWordNet(string fileName) {
         partNode = synSetNode->getFirstChild();
         while (partNode != nullptr){
             if (partNode->getName() == "ID"){
-                currentSynSet = SynSet(partNode->getPcData());
-                addSynSet(currentSynSet);
-                cout << currentSynSet.getId() << "\n";
+                currentSynSet = addSynSet(SynSet(partNode->getPcData()));
             } else {
                 if (partNode->getName() == "DEF"){
-                    currentSynSet.setDefinition(partNode->getPcData());
+                    currentSynSet->second.setDefinition(partNode->getPcData());
                 } else {
                     if (partNode->getName() == "EXAMPLE"){
-                        currentSynSet.setExample(partNode->getPcData());
+                        currentSynSet->second.setExample(partNode->getPcData());
                     } else {
                         if (partNode->getName() == "BCS") {
-                            currentSynSet.setBcs(std::stoi(partNode->getPcData()));
+                            currentSynSet->second.setBcs(std::stoi(partNode->getPcData()));
                         } else {
                             if (partNode->getName() == "POS") {
                                 switch (partNode->getPcData()[0]) {
                                     case 'a':
-                                        currentSynSet.setPos(Pos::ADJECTIVE);
+                                        currentSynSet->second.setPos(Pos::ADJECTIVE);
                                         break;
                                     case 'v':
-                                        currentSynSet.setPos(Pos::VERB);
+                                        currentSynSet->second.setPos(Pos::VERB);
                                         break;
                                     case 'b':
-                                        currentSynSet.setPos(Pos::ADVERB);
+                                        currentSynSet->second.setPos(Pos::ADVERB);
                                         break;
                                     case 'n':
-                                        currentSynSet.setPos(Pos::NOUN);
+                                        currentSynSet->second.setPos(Pos::NOUN);
                                         break;
                                     case 'i':
-                                        currentSynSet.setPos(Pos::INTERJECTION);
+                                        currentSynSet->second.setPos(Pos::INTERJECTION);
                                         break;
                                     case 'c':
-                                        currentSynSet.setPos(Pos::CONJUNCTION);
+                                        currentSynSet->second.setPos(Pos::CONJUNCTION);
                                         break;
                                     case 'p':
-                                        currentSynSet.setPos(Pos::PREPOSITION);
+                                        currentSynSet->second.setPos(Pos::PREPOSITION);
                                         break;
                                     case 'r':
-                                        currentSynSet.setPos(Pos::PRONOUN);
+                                        currentSynSet->second.setPos(Pos::PRONOUN);
                                         break;
                                 }
                             } else {
                                 if (partNode->getName() == "SR") {
-                                    srNode = partNode->getFirstChild();
-                                    if (srNode != nullptr) {
-                                        typeNode = srNode->getNextSibling();
-                                        if (typeNode != nullptr && typeNode->getName() == "TYPE") {
-                                            toNode = typeNode->getNextSibling();
-                                            if (toNode != nullptr && typeNode->getName() == "TO") {
-                                                currentSynSet.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData(), stoi(toNode->getPcData())));
-                                            } else {
-                                                currentSynSet.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
-                                            }
+                                    typeNode = partNode->getFirstChild();
+                                    if (typeNode != nullptr && typeNode->getName() == "TYPE") {
+                                        toNode = typeNode->getNextSibling();
+                                        if (toNode != nullptr && typeNode->getName() == "TO") {
+                                            currentSynSet->second.addRelation(new SemanticRelation(partNode->getPcData(), typeNode->getPcData(), stoi(toNode->getPcData())));
+                                        } else {
+                                            currentSynSet->second.addRelation(new SemanticRelation(partNode->getPcData(), typeNode->getPcData()));
                                         }
                                     }
                                 } else {
                                     if (partNode->getName() == "ILR") {
-                                        ilrNode = partNode->getFirstChild();
-                                        if (ilrNode != nullptr) {
-                                            typeNode = ilrNode->getNextSibling();
-                                            if (typeNode != nullptr && typeNode->getName() == "TYPE") {
-                                                string interlingualId = ilrNode->getPcData();
-                                                vector<SynSet> synSetList;
-                                                if (interlingualList.find(interlingualId) != interlingualList.end()){
-                                                    synSetList = interlingualList.find(interlingualId)->second;
-                                                }
-                                                synSetList.emplace_back(currentSynSet);
-                                                interlingualList.insert_or_assign(interlingualId, synSetList);
-                                                currentSynSet.addRelation(new InterlingualRelation(interlingualId, typeNode->getPcData()));
+                                        typeNode = partNode->getFirstChild();
+                                        if (typeNode != nullptr && typeNode->getName() == "TYPE") {
+                                            string interlingualId = partNode->getPcData();
+                                            vector<SynSet> synSetList;
+                                            if (interlingualList.find(interlingualId) != interlingualList.end()){
+                                                synSetList = interlingualList.find(interlingualId)->second;
                                             }
+                                            synSetList.emplace_back(currentSynSet->second);
+                                            interlingualList.insert_or_assign(interlingualId, synSetList);
+                                            currentSynSet->second.addRelation(new InterlingualRelation(interlingualId, typeNode->getPcData()));
                                         }
                                     } else {
                                         if (partNode->getName() == "SYNONYM") {
                                             literalNode = partNode->getFirstChild();
                                             while (literalNode != nullptr) {
-                                                textNode = literalNode->getFirstChild();
-                                                if (textNode != nullptr) {
-                                                    if (literalNode->getName() == "LITERAL") {
-                                                        senseNode = textNode->getNextSibling();
-                                                        if (senseNode != nullptr) {
-                                                            if (senseNode->getName() == "SENSE" && senseNode->getFirstChild() != nullptr) {
-                                                                currentLiteral = Literal(textNode->getPcData(), stoi(senseNode->getPcData()), currentSynSet.getId());
-                                                                currentSynSet.addLiteral(currentLiteral);
-                                                                addLiteralToLiteralList(currentLiteral);
-                                                                srNode = senseNode->getNextSibling();
-                                                                while (srNode != nullptr) {
-                                                                    if (srNode->getName() == "SR") {
-                                                                        typeNode = srNode->getNextSibling();
-                                                                        if (typeNode != nullptr && typeNode->getName() == "TYPE") {
-                                                                            currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
-                                                                        }
+                                                if (literalNode->getName() == "LITERAL") {
+                                                    senseNode = literalNode->getFirstChild();
+                                                    if (senseNode != nullptr) {
+                                                        if (senseNode->getName() == "SENSE" && !senseNode->getPcData().empty()) {
+                                                            currentLiteral = Literal(literalNode->getPcData(), stoi(senseNode->getPcData()), currentSynSet->second.getId());
+                                                            srNode = senseNode->getNextSibling();
+                                                            while (srNode != nullptr) {
+                                                                if (srNode->getName() == "SR") {
+                                                                    typeNode = srNode->getFirstChild();
+                                                                    if (typeNode != nullptr && typeNode->getName() == "TYPE") {
+                                                                        currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
                                                                     }
-                                                                    srNode = srNode->getNextSibling();
                                                                 }
+                                                                srNode = srNode->getNextSibling();
                                                             }
+                                                            currentSynSet->second.addLiteral(currentLiteral);
+                                                            addLiteralToLiteralList(currentLiteral);
                                                         }
                                                     }
                                                 }
@@ -122,7 +111,7 @@ void WordNet::readWordNet(string fileName) {
                                             }
                                         } else {
                                             if (partNode->getName() == "SNOTE") {
-                                                currentSynSet.setNote(partNode->getPcData());
+                                                currentSynSet->second.setNote(partNode->getPcData());
                                             }
                                         }
                                     }
@@ -179,7 +168,7 @@ WordNet::WordNet() {
 
 WordNet::WordNet(string fileName) {
     readWordNet(move(fileName));
-    readExceptionFile("englisg_exception.xml");
+    readExceptionFile("english_exception.xml");
 }
 
 WordNet::WordNet(string fileName, string exceptionFileName) {
@@ -233,8 +222,8 @@ vector<string> WordNet::getLiteralList() {
     return result;
 }
 
-void WordNet::addSynSet(SynSet synSet) {
-    synSetList.emplace(synSet.getId(), synSet);
+map<string, SynSet>::iterator WordNet::addSynSet(SynSet synSet) {
+    return synSetList.emplace(synSet.getId(), synSet).first;
 }
 
 void WordNet::removeSynSet(SynSet s) {

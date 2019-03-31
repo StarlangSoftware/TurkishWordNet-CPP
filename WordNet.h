@@ -41,7 +41,7 @@ public:
     void mergeSynSets(string synSetFile);
     vector<SynSet> getSynSetList();
     vector<string> getLiteralList();
-    void addSynSet(SynSet synSet);
+    map<string, SynSet>::iterator addSynSet(SynSet synSet);
     void removeSynSet(SynSet s);
     SynSet* getSynSetWithId(string synSetId);
     SynSet* getSynSetWithLiteral(string literal, int sense);

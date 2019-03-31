@@ -8,6 +8,7 @@
 #include <fstream>
 #include "XmlElement.h"
 #include "XmlTokenType.h"
+#include "XmlTextType.h"
 
 using namespace std;
 
@@ -21,7 +22,8 @@ private:
     string parseTag();
     string parseAttributeValue();
     string parseEmptyTag();
-    string getNextToken();
+    string getNextToken(XmlTextType xmlTextType);
+    void replaceEscapeCharacters(string& token);
 public:
     explicit XmlDocument(string fileName);
     ~XmlDocument();

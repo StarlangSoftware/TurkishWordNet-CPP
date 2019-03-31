@@ -7,4 +7,5 @@
 
 int main(){
     WordNet wordNet = WordNet();
+    wordNet.saveAsXml("deneme.xml");
 }
