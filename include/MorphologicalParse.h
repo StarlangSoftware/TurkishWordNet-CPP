@@ -56,7 +56,7 @@ public:
     bool isPlural();
     bool isAuxiliary();
     bool containsTag(MorphologicalTag tag);
-    string to_String();
+    string to_string();
 };
 
 
