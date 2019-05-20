@@ -9,6 +9,7 @@
 #include <vector>
 #include "Pos.h"
 #include "Synonym.h"
+#include "PolarityType.h"
 
 using namespace std;
 
@@ -22,6 +23,7 @@ private:
     vector<Relation*> relations;
     string note;
     int bcs;
+    PolarityType polarityType = PolarityType::NOT_AVAILABLE;
 public:
     bool operator==(const SynSet &anotherSynSet) const{
         return (id == anotherSynSet.id);
@@ -41,6 +43,8 @@ public:
     int numberOfDefinitions();
     void setExample(string example);
     string getExample();
+    PolarityType getPolarityType();
+    void setPolarityType(PolarityType polarityType);
     void setBcs(int bcs);
     int getBcs();
     void setPos(Pos pos);

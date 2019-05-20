@@ -163,6 +163,14 @@ string SynSet::getExample() {
     return example;
 }
 
+PolarityType SynSet::getPolarityType(){
+    return polarityType;
+}
+
+void SynSet::setPolarityType(PolarityType polarityType){
+    this->polarityType = polarityType;
+}
+
 void SynSet::setBcs(int bcs) {
     if (bcs >= 1 && bcs <= 3){
         this->bcs = bcs;
@@ -307,6 +315,7 @@ string SynSet::to_string() {
 }
 
 void SynSet::saveAsXml(ofstream& outfile) {
+    string polarity;
     outfile << "<SYNSET>";
     outfile << "<ID>" + id + "</ID>";
     synonym.saveAsXml(outfile);
@@ -343,6 +352,20 @@ void SynSet::saveAsXml(ofstream& outfile) {
     }
     for (Relation* r:relations){
         outfile << r->to_xml();
+    }
+    if (polarityType != PolarityType::NOT_AVAILABLE){
+        switch (polarityType){
+            case PolarityType::POSITIVE:
+                polarity = "positive";
+                break;
+            case PolarityType::NEGATIVE:
+                polarity = "negative";
+                break;
+            case PolarityType::NEUTRAL:
+                polarity = "neutral";
+                break;
+        }
+        outfile << "<POLARITY>" + polarity + "</POLARITY>";
     }
     if (!definition.empty()){
         outfile << "<DEF>" + getLongDefinition() + "</DEF>";

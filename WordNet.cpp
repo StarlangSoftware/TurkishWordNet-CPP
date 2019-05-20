@@ -117,6 +117,20 @@ void WordNet::readWordNet(string fileName) {
                                         } else {
                                             if (partNode->getName() == "SNOTE") {
                                                 currentSynSet->second.setNote(partNode->getPcData());
+                                            } else {
+                                                if (partNode->getName() == "POLARITY"){
+                                                    if (partNode->getPcData() == "positive"){
+                                                        currentSynSet->second.setPolarityType(PolarityType::POSITIVE);
+                                                    } else {
+                                                        if (partNode->getPcData() == "negative"){
+                                                            currentSynSet->second.setPolarityType(PolarityType::NEGATIVE);
+                                                        } else {
+                                                            if (partNode->getPcData() == "neutral"){
+                                                                currentSynSet->second.setPolarityType(PolarityType::NEUTRAL);
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -803,10 +817,10 @@ pair<string, int> WordNet::findLCS(vector<string> pathToRootOfSynSet1, vector<st
     for (int i = 0; i < pathToRootOfSynSet1.size(); i++) {
         string LCSid = pathToRootOfSynSet1.at(i);
         if (find(pathToRootOfSynSet2.begin(), pathToRootOfSynSet2.end(), LCSid) != pathToRootOfSynSet2.cend()) {
-            return pair(LCSid, pathToRootOfSynSet1.size() - i + 1);
+            return pair<string, int>(LCSid, pathToRootOfSynSet1.size() - i + 1);
         }
     }
-    return pair("", -1);
+    return pair<string, int>("", -1);
 }
 
 vector<string> WordNet::findPathToRoot(SynSet* synSet){
