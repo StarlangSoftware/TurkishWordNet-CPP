@@ -17,6 +17,9 @@ string SynSet::getId() {
 }
 
 void SynSet::setId(string id) {
+    for (int i = 0; i < getSynonym().literalSize(); i++){
+        synonym.getLiteral(i).setSynSetId(id);
+    }
     this->id = move(id);
 }
 

@@ -845,3 +845,9 @@ SynSet* WordNet::percolateUp(SynSet* root){
     }
     return nullptr;
 }
+
+void WordNet::changeSynSetId(SynSet s, string newId) {
+    synSetList.erase(s.getId());
+    s.setId(newId);
+    synSetList.emplace(newId, s);
+}

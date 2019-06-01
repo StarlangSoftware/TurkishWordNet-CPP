@@ -43,6 +43,7 @@ public:
     vector<string> getLiteralList();
     map<string, SynSet>::iterator addSynSet(SynSet synSet);
     void removeSynSet(SynSet s);
+    void changeSynSetId(SynSet s, string newId);
     SynSet* getSynSetWithId(string synSetId);
     SynSet* getSynSetWithLiteral(string literal, int sense);
     int numberOfSynSetsWithLiteral(string literal);
