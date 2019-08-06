@@ -8,6 +8,9 @@
 #include <map>
 #include "IdMapping.h"
 
+/**
+ * Constructor to load ID mappings from specific file "mapping.txt" to a {@link HashMap}.
+ */
 IdMapping::IdMapping() {
     ifstream inputFile;
     string s;
@@ -22,6 +25,11 @@ IdMapping::IdMapping() {
     inputFile.close();
 }
 
+/**
+ * Constructor to load ID mappings from given file to a {@link HashMap}.
+ *
+ * @param fileName String file name input that will be read
+ */
 IdMapping::IdMapping(string fileName) {
     ifstream inputFile;
     string s;
@@ -36,6 +44,11 @@ IdMapping::IdMapping(string fileName) {
     inputFile.close();
 }
 
+/**
+ * Returns a {@link Set} view of the keys contained in this map.
+ *
+ * @return a set view of the keys contained in this map
+ */
 vector<string> IdMapping::keySet() {
     vector<string> keySet;
     for (auto &it : map) {
@@ -43,6 +56,13 @@ vector<string> IdMapping::keySet() {
     }
 }
 
+/**
+ * Returns the value to which the specified key is mapped,
+ * or {@code null} if this map contains no mapping for the key.
+ *
+ * @param id String id of a key
+ * @return value of the specified key
+ */
 string IdMapping::mapTo(string id) {
     if (map.find(id) == map.end()){
         return "";
@@ -54,18 +74,40 @@ string IdMapping::mapTo(string id) {
     return mappedId;
 }
 
+/**
+ * Returns the value to which the specified key is mapped.
+ *
+ * @param id String id of a key
+ * @return value of the specified key
+ */
 string IdMapping::singleMap(string id) {
     return map.find(id)->second;
 }
 
+/**
+ * Associates the specified value with the specified key in this map.
+ *
+ * @param key   key with which the specified value is to be associated
+ * @param value value to be associated with the specified key
+ */
 void IdMapping::add(string key, string value) {
     map.emplace(key, value);
 }
 
+/**
+ * Removes the mapping for the specified key from this map if present.
+ *
+ * @param key key whose mapping is to be removed from the map
+ */
 void IdMapping::remove(string key) {
     map.erase(key);
 }
 
+/**
+ * Saves map to the specified file.
+ *
+ * @param fileName String file to write map
+ */
 void IdMapping::save(string fileName) {
     ofstream outputFile;
     outputFile.open(fileName, ofstream :: out);

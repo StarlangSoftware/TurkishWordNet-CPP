@@ -9,6 +9,10 @@
 #include "SemanticRelation.h"
 #include "InterlingualRelation.h"
 
+/**
+ * ReadWordNetTask class extends SwingWorker class which is an abstract class to perform lengthy
+ * GUI-interaction tasks in a background thread.
+ */
 void WordNet::readWordNet(string fileName) {
     XmlElement *rootNode, *synSetNode, *partNode, *srNode, *typeNode, *toNode, *literalNode, *senseNode;
     map<string, SynSet>::iterator currentSynSet;
@@ -146,6 +150,12 @@ void WordNet::readWordNet(string fileName) {
     }
 }
 
+/**
+ * Method constructs a DOM parser using the dtd/xml schema parser configuration and using this parser it
+ * reads exceptions from file and puts to exceptionList HashMap.
+ *
+ * @param exceptionFileName exception file to be read
+ */
 void WordNet::readExceptionFile(string exceptionFileName) {
     string wordName, rootForm;
     Pos pos;
@@ -181,20 +191,43 @@ void WordNet::readExceptionFile(string exceptionFileName) {
     }
 }
 
+/**
+ * A constructor that initializes the SynSet list, literal list and schedules the {@code SwingWorker} for execution
+ * on a <i>worker</i> thread.
+ */
 WordNet::WordNet() {
     readWordNet("turkish_wordnet.xml");
 }
 
+/**
+ * Another constructor that initializes the SynSet list, literal list, reads exception,
+ * and schedules the {@code SwingWorker} according to file with a specified name for execution on a <i>worker</i> thread.
+ *
+ * @param fileName resource to be read for the WordNet task
+ */
 WordNet::WordNet(string fileName) {
     readExceptionFile("english_exception.xml");
     readWordNet(move(fileName));
 }
 
+/**
+ * Another constructor that initializes the SynSet list, literal list, reads exception file with a specified name,
+ * sets the Locale of the programme with the specified locale, and schedules the {@code SwingWorker} according
+ * to file with a specified name for execution on a <i>worker</i> thread.
+ *
+ * @param fileName          resource to be read for the WordNet task
+ * @param exceptionFileName exception file to be read
+ */
 WordNet::WordNet(string fileName, string exceptionFileName) {
     readWordNet(move(fileName));
     readExceptionFile(move(exceptionFileName));
 }
 
+/**
+ * Adds a specified literal to the literal list.
+ *
+ * @param literal literal to be added
+ */
 void WordNet::addLiteralToLiteralList(Literal literal) {
     vector<Literal> literals;
     if (literalList.find(literal.getName()) != literalList.end()){
@@ -204,6 +237,11 @@ void WordNet::addLiteralToLiteralList(Literal literal) {
     literalList.insert_or_assign(literal.getName(), literals);
 }
 
+/**
+ * Method reads the specified SynSet file, gets the SynSets according to IDs in the file, and merges SynSets.
+ *
+ * @param synSetFile SynSet file to be read and merged
+ */
 void WordNet::mergeSynSets(string synSetFile) {
     ifstream inputFile;
     string line;
@@ -225,6 +263,11 @@ void WordNet::mergeSynSets(string synSetFile) {
     inputFile.close();
 }
 
+/**
+ * Returns the values of the SynSet list.
+ *
+ * @return values of the SynSet list
+ */
 vector<SynSet> WordNet::getSynSetList() {
     vector<SynSet> result;
     for (auto& iterator : synSetList){
@@ -233,6 +276,11 @@ vector<SynSet> WordNet::getSynSetList() {
     return result;
 }
 
+/**
+ * Returns the keys of the literal list.
+ *
+ * @return keys of the literal list
+ */
 vector<string> WordNet::getLiteralList() {
     vector<string> result;
     for (auto& iterator : literalList){
@@ -241,14 +289,30 @@ vector<string> WordNet::getLiteralList() {
     return result;
 }
 
+/**
+ * Adds specified SynSet to the SynSet list.
+ *
+ * @param synSet SynSet to be added
+ */
 map<string, SynSet>::iterator WordNet::addSynSet(SynSet synSet) {
     return synSetList.emplace(synSet.getId(), synSet).first;
 }
 
+/**
+ * Removes specified SynSet from the SynSet list.
+ *
+ * @param synSet SynSet to be added
+ */
 void WordNet::removeSynSet(SynSet s) {
     synSetList.erase(s.getId());
 }
 
+/**
+ * Returns SynSet with the specified SynSet ID.
+ *
+ * @param synSetId ID of the SynSet to be returned
+ * @return SynSet with the specified SynSet ID
+ */
 SynSet* WordNet::getSynSetWithId(string synSetId) {
     if (synSetList.find(synSetId) != synSetList.end()){
         return &(synSetList.find(synSetId)->second);
@@ -257,6 +321,13 @@ SynSet* WordNet::getSynSetWithId(string synSetId) {
     }
 }
 
+/**
+ * Returns SynSet with the specified literal and sense index.
+ *
+ * @param literal SynSet literal
+ * @param sense   SynSet's corresponding sense index
+ * @return SynSet with the specified literal and sense index
+ */
 SynSet* WordNet::getSynSetWithLiteral(string literal, int sense) {
     vector<Literal> literals;
     literals = literalList.find(literal)->second;
@@ -268,6 +339,12 @@ SynSet* WordNet::getSynSetWithLiteral(string literal, int sense) {
     return nullptr;
 }
 
+/**
+ * Returns the number of SynSets with a specified literal.
+ *
+ * @param literal literal to be searched in SynSets
+ * @return the number of SynSets with a specified literal
+ */
 int WordNet::numberOfSynSetsWithLiteral(string literal) {
     if (literalList.find(literal) != literalList.end()){
         return literalList.find(literal)->second.size();
@@ -276,6 +353,12 @@ int WordNet::numberOfSynSetsWithLiteral(string literal) {
     }
 }
 
+/**
+ * Returns a list of SynSets with a specified part of speech tag.
+ *
+ * @param pos part of speech tag to be searched in SynSets
+ * @return a list of SynSets with a specified part of speech tag
+ */
 vector<SynSet> WordNet::getSynSetsWithPartOfSpeech(Pos pos) {
     vector<SynSet> result;
     for (SynSet synSet : getSynSetList()){
@@ -286,6 +369,12 @@ vector<SynSet> WordNet::getSynSetsWithPartOfSpeech(Pos pos) {
     return result;
 }
 
+/**
+ * Returns a list of literals with a specified literal String.
+ *
+ * @param literal literal String to be searched in literal list
+ * @return a list of literals with a specified literal String
+ */
 vector<Literal> WordNet::getLiteralsWithName(string literal) {
     if (literalList.find(literal) != literalList.end()){
         return literalList.find(literal)->second;
@@ -294,6 +383,13 @@ vector<Literal> WordNet::getLiteralsWithName(string literal) {
     }
 }
 
+/**
+ * Finds the SynSet with specified literal String and part of speech tag and adds to the given SynSet list.
+ *
+ * @param result  SynSet list to add the specified SynSet
+ * @param literal literal String to be searched in literal list
+ * @param pos     part of speech tag to be searched in SynSets
+ */
 void WordNet::addSynSetsWithLiteralToList(vector<SynSet> result, string literal, Pos pos) {
     SynSet* synSet;
     for (Literal current : literalList.find(literal)->second){
@@ -304,6 +400,12 @@ void WordNet::addSynSetsWithLiteralToList(vector<SynSet> result, string literal,
     }
 }
 
+/**
+ * Finds SynSets with specified literal String and adds to the newly created SynSet list.
+ *
+ * @param literal literal String to be searched in literal list
+ * @return returns a list of SynSets with specified literal String
+ */
 vector<SynSet> WordNet::getSynSetsWithLiteral(string literal) {
     SynSet* synSet;
     vector<SynSet> result;
@@ -318,6 +420,12 @@ vector<SynSet> WordNet::getSynSetsWithLiteral(string literal) {
     return result;
 }
 
+/**
+ * Finds literals with specified literal String and adds to the newly created literal String list. Ex: cleanest - clean
+ *
+ * @param literal literal String to be searched in literal list
+ * @return returns a list of literals with specified literal String
+ */
 vector<string> WordNet::getLiteralsWithPossibleModifiedLiteral(string literal) {
     vector<string> result;
     result.emplace_back(literal);
@@ -366,6 +474,13 @@ vector<string> WordNet::getLiteralsWithPossibleModifiedLiteral(string literal) {
     return result;
 }
 
+/**
+ * Finds SynSets with specified literal String and part of speech tag, then adds to the newly created SynSet list. Ex: cleanest - clean
+ *
+ * @param literal literal String to be searched in literal list
+ * @param pos     part of speech tag to be searched in SynSets
+ * @return returns a list of SynSets with specified literal String and part of speech tag
+ */
 vector<SynSet> WordNet::getSynSetsWithPossiblyModifiedLiteral(string literal, Pos pos) {
     vector<SynSet> result;
     vector<string> modifiedLiterals = getLiteralsWithPossibleModifiedLiteral(move(literal));
@@ -377,6 +492,12 @@ vector<SynSet> WordNet::getSynSetsWithPossiblyModifiedLiteral(string literal, Po
     return result;
 }
 
+/**
+ * Adds the reverse relations to the SynSet.
+ *
+ * @param synSet           SynSet to add the reverse relations
+ * @param semanticRelation relation whose reverse will be added
+ */
 void WordNet::addReverseRelation(SynSet synSet, SemanticRelation semanticRelation) {
     SynSet* otherSynSet = getSynSetWithId(semanticRelation.getName());
     if (otherSynSet != nullptr){
@@ -387,6 +508,12 @@ void WordNet::addReverseRelation(SynSet synSet, SemanticRelation semanticRelatio
     }
 }
 
+/**
+ * Removes the reverse relations from the SynSet.
+ *
+ * @param synSet           SynSet to remove the reverse relation
+ * @param semanticRelation relation whose reverse will be removed
+ */
 void WordNet::removeReverseRelation(SynSet synSet, SemanticRelation semanticRelation) {
     SynSet* otherSynSet = getSynSetWithId(semanticRelation.getName());
     if (otherSynSet != nullptr){
@@ -397,6 +524,9 @@ void WordNet::removeReverseRelation(SynSet synSet, SemanticRelation semanticRela
     }
 }
 
+/**
+ * Loops through the SynSet list and adds the possible reverse relations.
+ */
 void WordNet::equalizeSemanticRelations() {
     for (SynSet synSet : getSynSetList()){
         for (int i = 0; i < synSet.relationSize(); i++){
@@ -407,6 +537,15 @@ void WordNet::equalizeSemanticRelations() {
     }
 }
 
+/**
+ * Creates a list of literals with a specified word, or possible words corresponding to morphological parse.
+ *
+ * @param word      literal String
+ * @param parse     morphological parse to get possible words
+ * @param metaParse metamorphic parse to get possible words
+ * @param fsm       finite state machine morphological analyzer to be used at getting possible words
+ * @return a list of literal
+ */
 vector<Literal> WordNet::constructLiterals(string word, MorphologicalParse parse, MetamorphicParse metaParse,
                                            FsmMorphologicalAnalyzer fsm) {
     vector<Literal> result;
@@ -428,6 +567,15 @@ vector<Literal> WordNet::constructLiterals(string word, MorphologicalParse parse
     return result;
 }
 
+/**
+ * Creates a list of SynSets with a specified word, or possible words corresponding to morphological parse.
+ *
+ * @param word      literal String  to get SynSets with
+ * @param parse     morphological parse to get SynSets with proper literals
+ * @param metaParse metamorphic parse to get possible words
+ * @param fsm       finite state machine morphological analyzer to be used at getting possible words
+ * @return a list of SynSets
+ */
 vector<SynSet> WordNet::constructSynSets(string word, MorphologicalParse parse, MetamorphicParse metaParse,
                                          FsmMorphologicalAnalyzer fsm) {
     vector<SynSet> result;
@@ -526,6 +674,18 @@ vector<SynSet> WordNet::constructSynSets(string word, MorphologicalParse parse, 
     return result;
 }
 
+/**
+ * Returns a list of literals using 3 possible words gathered with the specified morphological parses and metamorphic parses.
+ *
+ * @param morphologicalParse1 morphological parse to get possible words
+ * @param morphologicalParse2 morphological parse to get possible words
+ * @param morphologicalParse3 morphological parse to get possible words
+ * @param metaParse1          metamorphic parse to get possible words
+ * @param metaParse2          metamorphic parse to get possible words
+ * @param metaParse3          metamorphic parse to get possible words
+ * @param fsm                 finite state machine morphological analyzer to be used at getting possible words
+ * @return a list of literals
+ */
 vector<Literal>
 WordNet::constructIdiomLiterals(MorphologicalParse morphologicalParse1, MorphologicalParse morphologicalParse2,
                                 MorphologicalParse morphologicalParse3, MetamorphicParse metaParse1,
@@ -548,6 +708,18 @@ WordNet::constructIdiomLiterals(MorphologicalParse morphologicalParse1, Morpholo
     return result;
 }
 
+/**
+ * Returns a list of SynSets using 3 possible words gathered with the specified morphological parses and metamorphic parses.
+ *
+ * @param morphologicalParse1 morphological parse to get possible words
+ * @param morphologicalParse2 morphological parse to get possible words
+ * @param morphologicalParse3 morphological parse to get possible words
+ * @param metaParse1          metamorphic parse to get possible words
+ * @param metaParse2          metamorphic parse to get possible words
+ * @param metaParse3          metamorphic parse to get possible words
+ * @param fsm                 finite state machine morphological analyzer to be used at getting possible words
+ * @return a list of SynSets
+ */
 vector<SynSet>
 WordNet::constructIdiomSynSets(MorphologicalParse morphologicalParse1, MorphologicalParse morphologicalParse2,
                                MorphologicalParse morphologicalParse3, MetamorphicParse metaParse1,
@@ -571,6 +743,16 @@ WordNet::constructIdiomSynSets(MorphologicalParse morphologicalParse1, Morpholog
     return result;
 }
 
+/**
+ * Returns a list of literals using 2 possible words gathered with the specified morphological parses and metamorphic parses.
+ *
+ * @param morphologicalParse1 morphological parse to get possible words
+ * @param morphologicalParse2 morphological parse to get possible words
+ * @param metaParse1          metamorphic parse to get possible words
+ * @param metaParse2          metamorphic parse to get possible words
+ * @param fsm                 finite state machine morphological analyzer to be used at getting possible words
+ * @return a list of literals
+ */
 vector<Literal>
 WordNet::constructIdiomLiterals(MorphologicalParse morphologicalParse1, MorphologicalParse morphologicalParse2,
                                 MetamorphicParse metaParse1, MetamorphicParse metaParse2,
@@ -589,6 +771,16 @@ WordNet::constructIdiomLiterals(MorphologicalParse morphologicalParse1, Morpholo
     return result;
 }
 
+/**
+ * Returns a list of SynSets using 2 possible words gathered with the specified morphological parses and metamorphic parses.
+ *
+ * @param morphologicalParse1 morphological parse to get possible words
+ * @param morphologicalParse2 morphological parse to get possible words
+ * @param metaParse1          metamorphic parse to get possible words
+ * @param metaParse2          metamorphic parse to get possible words
+ * @param fsm                 finite state machine morphological analyzer to be used at getting possible words
+ * @return a list of SynSets
+ */
 vector<SynSet>
 WordNet::constructIdiomSynSets(MorphologicalParse morphologicalParse1, MorphologicalParse morphologicalParse2,
                                MetamorphicParse metaParse1, MetamorphicParse metaParse2, FsmMorphologicalAnalyzer fsm) {
@@ -608,12 +800,21 @@ WordNet::constructIdiomSynSets(MorphologicalParse morphologicalParse1, Morpholog
     return result;
 }
 
+/**
+ * Sorts definitions of SynSets in SynSet list according to their lengths.
+ */
 void WordNet::sortDefinitions() {
     for (SynSet synSet: getSynSetList()){
         synSet.sortDefinitions();
     }
 }
 
+/**
+ * Returns a list of SynSets with the interlingual relations of a specified SynSet ID.
+ *
+ * @param synSetId SynSet ID to be searched
+ * @return a list of SynSets with the interlingual relations of a specified SynSet ID
+ */
 vector<SynSet> WordNet::getInterlingual(string synSetId) {
     if (interlingualList.find(synSetId) != interlingualList.end()){
         return interlingualList.find(synSetId)->second;
@@ -622,6 +823,11 @@ vector<SynSet> WordNet::getInterlingual(string synSetId) {
     }
 }
 
+/**
+ * Finds the interlingual relations of each SynSet in the SynSet list with SynSets of a specified WordNet. Prints them on the screen.
+ *
+ * @param secondWordNet WordNet in other language to find relations
+ */
 void WordNet::multipleInterlingualRelationCheck1(WordNet secondWordNet) {
     for (SynSet synSet : getSynSetList()){
         vector<string> interlingual = synSet.getInterlingual();
@@ -636,6 +842,11 @@ void WordNet::multipleInterlingualRelationCheck1(WordNet secondWordNet) {
     }
 }
 
+/**
+ * Loops through the interlingual list and retrieves the SynSets from that list, then prints them.
+ *
+ * @param secondWordNet WordNet in other language to find relations
+ */
 void WordNet::multipleInterlingualRelationCheck2(WordNet secondWordNet) {
     for (auto& iterator : interlingualList){
         string s = iterator.first;
@@ -650,6 +861,9 @@ void WordNet::multipleInterlingualRelationCheck2(WordNet secondWordNet) {
     }
 }
 
+/**
+ * Print the literals with same senses.
+ */
 void WordNet::sameLiteralSameSenseCheck() {
     for (auto& iterator : literalList){
         string name = iterator.first;
@@ -670,6 +884,9 @@ struct synSetSizeComparator{
     }
 };
 
+/**
+ * Prints the literals with same SynSets.
+ */
 void WordNet::sameLiteralSameSynSetCheck() {
     vector<SynSet> synsets;
     for (SynSet synSet : getSynSetList()){
@@ -695,6 +912,9 @@ void WordNet::sameLiteralSameSynSetCheck() {
     }
 }
 
+/**
+ * Prints the SynSets without definitions.
+ */
 void WordNet::noDefinitionCheck() {
     for (SynSet synSet : getSynSetList()){
         if (synSet.getDefinition().empty()){
@@ -703,6 +923,9 @@ void WordNet::noDefinitionCheck() {
     }
 }
 
+/**
+ * Prints SynSets without relation IDs.
+ */
 void WordNet::semanticRelationNoIDCheck() {
     for (SynSet synSet : getSynSetList()){
         for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
@@ -729,6 +952,9 @@ void WordNet::semanticRelationNoIDCheck() {
     }
 }
 
+/**
+ * Prints SynSets with same relations.
+ */
 void WordNet::sameSemanticRelationCheck() {
     for (SynSet synSet : getSynSetList()){
         for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
@@ -763,6 +989,11 @@ void WordNet::sameSemanticRelationCheck() {
     }
 }
 
+/**
+ * Performs check processes.
+ *
+ * @param secondWordNet WordNet to compare
+ */
 void WordNet::check(WordNet secondWordNet) {
     //multipleInterlingualRelationCheck1(secondWordNet);
     sameLiteralSameSynSetCheck();
@@ -773,6 +1004,11 @@ void WordNet::check(WordNet secondWordNet) {
     //multipleInterlingualRelationCheck2(secondWordNet);
 }
 
+/**
+ * Method to write SynSets to the specified file in the XML format.
+ *
+ * @param fileName file name to write XML files
+ */
 void WordNet::saveAsXml(string fileName) {
     ofstream outFile;
     outFile.open(fileName, ofstream::out);
@@ -784,10 +1020,22 @@ void WordNet::saveAsXml(string fileName) {
     outFile.close();
 }
 
+/**
+ * Returns the size of the SynSet list.
+ *
+ * @return the size of the SynSet list
+ */
 int WordNet::size() {
     return synSetList.size();
 }
 
+/**
+ * Conduct common operations between similarity metrics.
+ *
+ * @param pathToRootOfSynSet1 first list of Strings
+ * @param pathToRootOfSynSet2 second list of Strings
+ * @return path length
+ */
 int WordNet::findPathLength(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2) {
     // There might not be a path between nodes, due to missing nodes. Keep track of that as well. Break when the LCS if found.
     for (int i = 0; i < pathToRootOfSynSet1.size(); i++) {
@@ -800,6 +1048,13 @@ int WordNet::findPathLength(vector<string> pathToRootOfSynSet1, vector<string> p
     return -1;
 }
 
+/**
+ * Returns the depth of path.
+ *
+ * @param pathToRootOfSynSet1 first list of Strings
+ * @param pathToRootOfSynSet2 second list of Strings
+ * @return LCS depth
+ */
 int WordNet::findLCSdepth(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2){
     pair<string, int> temp = findLCS(move(pathToRootOfSynSet1), move(pathToRootOfSynSet2));
     if (!temp.first.empty()) {
@@ -808,11 +1063,25 @@ int WordNet::findLCSdepth(vector<string> pathToRootOfSynSet1, vector<string> pat
     return -1;
 }
 
+/**
+ * Returns the ID of LCS of path.
+ *
+ * @param pathToRootOfSynSet1 first list of Strings
+ * @param pathToRootOfSynSet2 second list of Strings
+ * @return LCS ID
+ */
 string WordNet::findLCSid(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2){
     pair<string, int> temp = findLCS(move(pathToRootOfSynSet1), move(pathToRootOfSynSet2));
     return temp.first;
 }
 
+/**
+ * Returns depth and ID of the LCS.
+ *
+ * @param pathToRootOfSynSet1 first list of Strings
+ * @param pathToRootOfSynSet2 second list of Strings
+ * @return depth and ID of the LCS
+ */
 pair<string, int> WordNet::findLCS(vector<string> pathToRootOfSynSet1, vector<string> pathToRootOfSynSet2){
     for (int i = 0; i < pathToRootOfSynSet1.size(); i++) {
         string LCSid = pathToRootOfSynSet1.at(i);
@@ -823,6 +1092,12 @@ pair<string, int> WordNet::findLCS(vector<string> pathToRootOfSynSet1, vector<st
     return pair<string, int>("", -1);
 }
 
+/**
+ * Finds the path to the root node of a SynSets.
+ *
+ * @param synSet SynSet whose root path will be found
+ * @return list of String corresponding to nodes in the path
+ */
 vector<string> WordNet::findPathToRoot(SynSet* synSet){
     vector<string> pathToRoot;
     while (synSet != nullptr) {
@@ -832,6 +1107,12 @@ vector<string> WordNet::findPathToRoot(SynSet* synSet){
     return pathToRoot;
 }
 
+/**
+ * Finds the parent of a node. It does not move until the root, instead it goes one level up.
+ *
+ * @param root SynSet whose root will be find
+ * @return root SynSet
+ */
 SynSet* WordNet::percolateUp(SynSet* root){
     for (int i = 0; i < root->relationSize(); i++) {
         Relation* r = root->getRelation(i);
@@ -846,6 +1127,12 @@ SynSet* WordNet::percolateUp(SynSet* root){
     return nullptr;
 }
 
+/**
+ * Changes ID of a specified SynSet with the specified new ID.
+ *
+ * @param synSet SynSet whose ID will be updated
+ * @param newId  new ID
+ */
 void WordNet::changeSynSetId(SynSet s, string newId) {
     synSetList.erase(s.getId());
     s.setId(newId);

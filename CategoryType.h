@@ -5,6 +5,9 @@
 #ifndef WORDNET_CATEGORYTYPE_H
 #define WORDNET_CATEGORYTYPE_H
 
+/**
+ * Enumerator class for the pre-defined categories of words.
+ */
 enum class CategoryType{
     MATHEMATICS, SPORT, MUSIC, SLANG, BOTANIC,
     PLURAL, MARINE, HISTORY, THEOLOGY, ZOOLOGY,

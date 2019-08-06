@@ -5,6 +5,9 @@
 #ifndef WORDNET_SEMANTICRELATIONTYPE_H
 #define WORDNET_SEMANTICRELATIONTYPE_H
 
+/**
+ * Enumerator class for the semantic relation types.
+ */
 enum class SemanticRelationType{
     ANTONYM, HYPERNYM,
     INSTANCE_HYPERNYM, HYPONYM, INSTANCE_HYPONYM, MEMBER_HOLONYM, SUBSTANCE_HOLONYM,

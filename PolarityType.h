@@ -6,6 +6,9 @@
 #define WORDNET_POLARITYTYPE_H
 
 
+/**
+ * Enumerator class for the pre-defined polarities of words.
+ */
 enum class PolarityType {
     POSITIVE, NEGATIVE, NEUTRAL, NOT_AVAILABLE
 };

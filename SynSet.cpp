@@ -8,14 +8,29 @@
 #include "InterlingualRelation.h"
 #include "SemanticRelation.h"
 
+/**
+ * Constructor initialize SynSet ID, synonym and relations list.
+ *
+ * @param id Synset ID
+ */
 SynSet::SynSet(string id) {
     this->id = move(id);
 }
 
+/**
+ * Accessor for the SynSet ID.
+ *
+ * @return SynSet ID
+ */
 string SynSet::getId() {
     return id;
 }
 
+/**
+ * Mutator method for the SynSet ID.
+ *
+ * @param id SynSet ID to be set
+ */
 void SynSet::setId(string id) {
     for (int i = 0; i < getSynonym().literalSize(); i++){
         synonym.getLiteral(i).setSynSetId(id);
@@ -23,10 +38,20 @@ void SynSet::setId(string id) {
     this->id = move(id);
 }
 
+/**
+ * Mutator method for the definition.
+ *
+ * @param definition String definition
+ */
 void SynSet::setDefinition(string definition) {
     this->definition = Word::split(move(definition), "|");
 }
 
+/**
+ * Removes the specified definition from long definition.
+ *
+ * @param definition definition to be removed
+ */
 void SynSet::removeDefinition(string definition) {
     string longDefinition = getLongDefinition();
     if (Word::startsWith(longDefinition, definition + "|")){
@@ -42,6 +67,11 @@ void SynSet::removeDefinition(string definition) {
     }
 }
 
+/**
+ * Removes the same definitions from long definition.
+ *
+ * @param locale Locale of the programme that will be used in converting upper/lower cases
+ */
 void SynSet::removeSameDefinitions() {
     string definition = getLongDefinition();
     bool removed = true;
@@ -112,16 +142,31 @@ void SynSet::removeSameDefinitions() {
     }
 }
 
+/**
+ * Accessor for the definition.
+ *
+ * @return definition
+ */
 string SynSet::getDefinition() {
     if (!definition.empty()){
         return definition.at(0);
     }
 }
 
+/**
+ * Returns the first literal's name.
+ *
+ * @return the first literal's name.
+ */
 string SynSet::representative() {
     return getSynonym().getLiteral(0).getName();
 }
 
+/**
+ * Returns all the definitions in the list.
+ *
+ * @return all the definitions
+ */
 string SynSet::getLongDefinition() {
     if (!definition.empty()){
         string longDefinition = definition.at(0);
@@ -134,6 +179,9 @@ string SynSet::getLongDefinition() {
     }
 }
 
+/**
+ * Sorts definitions list according to their lengths.
+ */
 void SynSet::sortDefinitions() {
     if (!definition.empty()){
         for (int i = 0; i < definition.size(); i++){
@@ -146,6 +194,12 @@ void SynSet::sortDefinitions() {
     }
 }
 
+/**
+ * Accessor for the definition at specified index.
+ *
+ * @param index definition index to be accessed
+ * @return definition at specified index
+ */
 string SynSet::getDefinition(int index) {
     if (index < definition.size() && index >= 0){
         return definition[index];
@@ -154,56 +208,122 @@ string SynSet::getDefinition(int index) {
     }
 }
 
+/**
+ * Returns number of definitions in the list.
+ *
+ * @return number of definitions in the list.
+ */
 int SynSet::numberOfDefinitions() {
     return definition.size();
 }
 
+/**
+ * Mutator for the example.
+ *
+ * @param example String that will be used to set
+ */
 void SynSet::setExample(string example) {
     this->example = move(example);
 }
 
+/**
+ * Accessor for the example.
+ *
+ * @return String example
+ */
 string SynSet::getExample() {
     return example;
 }
 
+/**
+ * Accessor for the polarity types.
+ *
+ * @return POSITIVE, NEGATIVE, NEUTRAL, or NOT_AVAILABLE.
+ */
 PolarityType SynSet::getPolarityType(){
     return polarityType;
 }
 
+/**
+ * Mutator for the polarity type.
+ *
+ * @param polarityType POSITIVE, NEGATIVE, NEUTRAL, or NOT_AVAILABLE.
+ */
 void SynSet::setPolarityType(PolarityType polarityType){
     this->polarityType = polarityType;
 }
 
+/**
+ * Mutator for the bcs value which enables the connection with the BalkaNet.
+ *
+ * @param bcs bcs value
+ */
 void SynSet::setBcs(int bcs) {
     if (bcs >= 1 && bcs <= 3){
         this->bcs = bcs;
     }
 }
 
+/**
+ * Accessor for the bcs value
+ *
+ * @return bcs value
+ */
 int SynSet::getBcs() {
     return bcs;
 }
 
+/**
+ * Mutator for the part of speech tags.
+ *
+ * @param pos part of speech tag
+ */
 void SynSet::setPos(Pos pos) {
     this->pos = pos;
 }
 
+/**
+ * Accessor for the part of speech tag.
+ *
+ * @return part of speech tag
+ */
 Pos SynSet::getPos() {
     return pos;
 }
 
+/**
+ * Mutator for the available notes.
+ *
+ * @param note String note to be set
+ */
 void SynSet::setNote(string note) {
     this->note = move(note);
 }
 
+/**
+ * Accessor for the available notes.
+ *
+ * @return String note
+ */
 string SynSet::getNote() {
     return note;
 }
 
+/**
+ * Appends the specified Relation to the end of relations list.
+ *
+ * @param relation element to be appended to the list
+ */
 void SynSet::addRelation(Relation *relation) {
     relations.emplace_back(relation);
 }
 
+/**
+ * Removes the first occurrence of the specified element from relations list,
+ * if it is present. If the list does not contain the element, it stays unchanged.
+ *
+ * @param relation element to be removed from the list, if present
+ */
 void SynSet::removeRelation(Relation *relation) {
     for (auto it = relations.begin() ; it != relations.end(); ++it){
         if (*(*it) == *relation){
@@ -213,6 +333,12 @@ void SynSet::removeRelation(Relation *relation) {
     }
 }
 
+/**
+ * Removes the first occurrence of the specified element from relations list according to relation name,
+ * if it is present. If the list does not contain the element, it stays unchanged.
+ *
+ * @param name element to be removed from the list, if present
+ */
 void SynSet::removeRelation(string name) {
     for (auto it = relations.begin() ; it != relations.end(); ++it){
         if ((*it)->getName() == name){
@@ -222,10 +348,21 @@ void SynSet::removeRelation(string name) {
     }
 }
 
+/**
+ * Returns the element at the specified position in relations list.
+ *
+ * @param index index of the element to return
+ * @return the element at the specified position in the list
+ */
 Relation *SynSet::getRelation(int index) {
     return relations.at(index);
 }
 
+/**
+ * Returns interlingual relations with the synonym interlingual dependencies.
+ *
+ * @return a list of SynSets that has interlingual relations in it
+ */
 vector<string> SynSet::getInterlingual() {
     vector<string> result;
     for (auto &i : relations) {
@@ -239,18 +376,39 @@ vector<string> SynSet::getInterlingual() {
     return result;
 }
 
+/**
+ * Returns the size of the relations list.
+ *
+ * @return the size of the relations list
+ */
 int SynSet::relationSize() {
     return relations.size();
 }
 
+/**
+ * Adds a specified literal to the synonym.
+ *
+ * @param literal literal to be added
+ */
 void SynSet::addLiteral(Literal literal) {
     synonym.addLiteral(move(literal));
 }
 
+/**
+ * Accessor for the synonym.
+ *
+ * @return synonym
+ */
 Synonym SynSet::getSynonym() {
     return synonym;
 }
 
+/**
+ * Compares literals of synonym and the specified SynSet, returns true if their have same literals.
+ *
+ * @param synSet SynSet to compare
+ * @return true if SynSets have same literals, false otherwise
+ */
 bool SynSet::containsSameLiteral(SynSet synSet) {
     for (int i = 0; i < synonym.literalSize(); i++){
         string literal1 = synonym.getLiteral(i).getName();
@@ -264,6 +422,12 @@ bool SynSet::containsSameLiteral(SynSet synSet) {
     return false;
 }
 
+/**
+ * Returns <tt>true</tt> if relations list contains the specified relation.
+ *
+ * @param relation element whose presence in the list is to be tested
+ * @return <tt>true</tt> if the list contains the specified element
+ */
 bool SynSet::containsRelation(Relation *relation) {
     for (Relation* r : relations) {
         if (*r == *relation){
@@ -273,6 +437,12 @@ bool SynSet::containsRelation(Relation *relation) {
     return false;
 }
 
+/**
+ * Returns <tt>true</tt> if specified semantic relation type presents in the relations list.
+ *
+ * @param semanticRelationType element whose presence in the list is to be tested
+ * @return <<tt>true</tt> if specified semantic relation type presents in the relations list
+ */
 bool SynSet::containsRelationType(SemanticRelationType semanticRelationType) {
     for (Relation* relation : relations) {
         if (auto * semanticRelation = dynamic_cast<SemanticRelation*>(relation)){
@@ -284,6 +454,11 @@ bool SynSet::containsRelationType(SemanticRelationType semanticRelationType) {
     return false;
 }
 
+/**
+ * Merges synonym and a specified SynSet with their definitions, relations, part of speech tags and examples.
+ *
+ * @param synSet SynSet to be merged
+ */
 void SynSet::mergeSynSet(SynSet synSet) {
     for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
         if (!synonym.contains(synSet.getSynonym().getLiteral(i))){
@@ -309,6 +484,11 @@ void SynSet::mergeSynSet(SynSet synSet) {
     }
 }
 
+/**
+ * Overridden toString method to print the first definition or representative.
+ *
+ * @return print the first definition or representative.
+ */
 string SynSet::to_string() {
     if (!definition.empty()){
         return definition[0];
@@ -317,6 +497,11 @@ string SynSet::to_string() {
     }
 }
 
+/**
+ * Method to write SynSets to the specified file in the XML format.
+ *
+ * @param outfile BufferedWriter to write XML files
+ */
 void SynSet::saveAsXml(ofstream& outfile) {
     string polarity;
     outfile << "<SYNSET>";

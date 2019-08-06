@@ -18,16 +18,35 @@ const SemanticRelationType SemanticRelation::semanticDependencyTags[SEMANTIC_DEP
                                                                                                  SemanticRelationType::DOMAIN_USAGE, SemanticRelationType::MEMBER_USAGE, SemanticRelationType::ENTAILMENT, SemanticRelationType::CAUSE, SemanticRelationType::ALSO_SEE,
                                                                                                  SemanticRelationType::VERB_GROUP, SemanticRelationType::SIMILAR_TO, SemanticRelationType::PARTICIPLE_OF_VERB};
 
+/**
+ * A constructor to initialize relation type and the relation name.
+ *
+ * @param name         name of the relation
+ * @param relationType String semantic dependency tag
+ */
 SemanticRelation::SemanticRelation(string name, string relationType, int toIndex) : Relation(move(name)){
     this->relationType = getSemanticTag(move(relationType));
     this->toIndex = toIndex;
 }
 
+/**
+ * Another constructor that initializes relation type, relation name, and the index.
+ *
+ * @param name         name of the relation
+ * @param relationType String semantic dependency tag
+ * @param toIndex      index of the relation
+ */
 SemanticRelation::SemanticRelation(string name, SemanticRelationType relationType, int toIndex) : Relation(move(name)){
     this->relationType = relationType;
     this->toIndex = toIndex;
 }
 
+/**
+ * Accessor to retrieve semantic relation type given a specific semantic dependency tag.
+ *
+ * @param tag String semantic dependency tag
+ * @return semantic relation type
+ */
 SemanticRelationType SemanticRelation::getSemanticTag(string tag) {
     for (int j = 0; j < SEMANTIC_DEPENDENCY_SIZE; j++) {
         if (tag == SemanticRelation::semanticDependency[j]) {
@@ -36,6 +55,12 @@ SemanticRelationType SemanticRelation::getSemanticTag(string tag) {
     }
 }
 
+/**
+ * Returns the reverse of a specific semantic relation type.
+ *
+ * @param semanticRelationType semantic relation type to be reversed
+ * @return reversed version of the semantic relation type
+ */
 SemanticRelationType SemanticRelation::reverse(SemanticRelationType semanticRelationType) {
     switch (semanticRelationType){
         case SemanticRelationType::HYPERNYM:
@@ -77,22 +102,47 @@ SemanticRelationType SemanticRelation::reverse(SemanticRelationType semanticRela
     }
 }
 
+/**
+ * Returns the index value.
+ *
+ * @return index value.
+ */
 int SemanticRelation::getToIndex() {
     return toIndex;
 }
 
+/**
+ * Accessor for the semantic relation type.
+ *
+ * @return semantic relation type
+ */
 SemanticRelationType SemanticRelation::getRelationType(){
     return relationType;
 }
 
+/**
+ * Mutator for the semantic relation type.
+ *
+ * @param relationType semantic relation type.
+ */
 void SemanticRelation::setRelationType(SemanticRelationType relationType){
     this->relationType = relationType;
 }
 
+/**
+ * Accessor method to retrieve the semantic relation type as a String.
+ *
+ * @return String semantic relation type
+ */
 string SemanticRelation::getTypeAsString(){
     return SemanticRelation::semanticDependency[static_cast<int>(relationType)];
 }
 
+/**
+ * Overridden toString method to print semantic relation types and names.
+ *
+ * @return semantic relation types and names
+ */
 string SemanticRelation::to_string() {
     return getTypeAsString() + "->" + name;
 }
