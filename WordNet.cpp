@@ -121,20 +121,6 @@ void WordNet::readWordNet(string fileName) {
                                         } else {
                                             if (partNode->getName() == "SNOTE") {
                                                 currentSynSet->second.setNote(partNode->getPcData());
-                                            } else {
-                                                if (partNode->getName() == "POLARITY"){
-                                                    if (partNode->getPcData() == "positive"){
-                                                        currentSynSet->second.setPolarityType(PolarityType::POSITIVE);
-                                                    } else {
-                                                        if (partNode->getPcData() == "negative"){
-                                                            currentSynSet->second.setPolarityType(PolarityType::NEGATIVE);
-                                                        } else {
-                                                            if (partNode->getPcData() == "neutral"){
-                                                                currentSynSet->second.setPolarityType(PolarityType::NEUTRAL);
-                                                            }
-                                                        }
-                                                    }
-                                                }
                                             }
                                         }
                                     }

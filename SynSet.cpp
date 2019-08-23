@@ -236,24 +236,6 @@ string SynSet::getExample() {
 }
 
 /**
- * Accessor for the polarity types.
- *
- * @return POSITIVE, NEGATIVE, NEUTRAL, or NOT_AVAILABLE.
- */
-PolarityType SynSet::getPolarityType(){
-    return polarityType;
-}
-
-/**
- * Mutator for the polarity type.
- *
- * @param polarityType POSITIVE, NEGATIVE, NEUTRAL, or NOT_AVAILABLE.
- */
-void SynSet::setPolarityType(PolarityType polarityType){
-    this->polarityType = polarityType;
-}
-
-/**
  * Mutator for the bcs value which enables the connection with the BalkaNet.
  *
  * @param bcs bcs value
@@ -540,20 +522,6 @@ void SynSet::saveAsXml(ofstream& outfile) {
     }
     for (Relation* r:relations){
         outfile << r->to_xml();
-    }
-    if (polarityType != PolarityType::NOT_AVAILABLE){
-        switch (polarityType){
-            case PolarityType::POSITIVE:
-                polarity = "positive";
-                break;
-            case PolarityType::NEGATIVE:
-                polarity = "negative";
-                break;
-            case PolarityType::NEUTRAL:
-                polarity = "neutral";
-                break;
-        }
-        outfile << "<POLARITY>" + polarity + "</POLARITY>";
     }
     if (!definition.empty()){
         outfile << "<DEF>" + getLongDefinition() + "</DEF>";
