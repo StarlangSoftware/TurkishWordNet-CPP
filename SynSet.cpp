@@ -485,7 +485,6 @@ string SynSet::to_string() {
  * @param outfile BufferedWriter to write XML files
  */
 void SynSet::saveAsXml(ofstream& outfile) {
-    string polarity;
     outfile << "<SYNSET>";
     outfile << "<ID>" + id + "</ID>";
     synonym.saveAsXml(outfile);
