@@ -53,7 +53,7 @@ Use Git for cloning the code to your local or below line for Ubuntu:
 
 A directory called TurkishWordNet-CPP will be created. Or you can use below link for exploring the code:
 
-	git clone https://github.com/olcaytaner/TurkishWordNet-CPP.git
+	git clone https://github.com/starlangsoftware/TurkishWordNet-CPP.git
 
 ## Open project with CLion IDE
 
