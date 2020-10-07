@@ -97,6 +97,8 @@ SemanticRelationType SemanticRelation::reverse(SemanticRelationType semanticRela
             return SemanticRelationType::MEMBER_USAGE;
         case SemanticRelationType::MEMBER_USAGE:
             return SemanticRelationType::DOMAIN_USAGE;
+        case SemanticRelationType::DERIVATION_RELATED:
+            return SemanticRelationType::DERIVATION_RELATED;
         default:
             break;
     }
