@@ -21,6 +21,7 @@ public:
     explicit FiniteStateMachine(string fileName);
     bool isValidTransition(string transition);
     State getState(string name);
+    vector<State> getStates();
     void addTransition(State fromState, State toState, string with, string withName);
     void addTransition(State fromState, State toState, string with, string withName, string toPos);
     vector<Transition> getTransitions(State state);

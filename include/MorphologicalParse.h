@@ -56,7 +56,25 @@ public:
     bool isPlural();
     bool isAuxiliary();
     bool containsTag(MorphologicalTag tag);
+    string getTreePos();
+    vector<string> getUniversalDependencyFeatures();
+    string getUniversalDependencyPos();
     string to_string();
+private:
+    string getPronType();
+    string getNumType();
+    string getReflex();
+    string getNumber();
+    string getCase();
+    string getDefinite();
+    string getDegree();
+    string getPolarity();
+    string getPerson();
+    string getVoice();
+    string getAspect();
+    string getTense();
+    string getMood();
+    string getVerbForm();
 };
 
 

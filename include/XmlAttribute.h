@@ -14,7 +14,7 @@ private:
     string value;
 public:
     XmlAttribute();
-    XmlAttribute(string name);
+    explicit XmlAttribute(string name);
     string getName();
     string getValue();
     void setValue(string value);

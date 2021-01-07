@@ -12,7 +12,7 @@ using namespace std;
 template<class K, class T> class LRUCache {
 private:
     int cacheSize = 10000;
-    map<K, CacheNode<K, T>*> map;
+    map<K, CacheNode<K, T>*> _map;
     CacheLinkedList<K, T> cache;
 public:
     explicit LRUCache(int cacheSize);
@@ -41,7 +41,7 @@ template<class K, class T> LRUCache<K, T>::LRUCache(int cacheSize) {
  * @return true if the {@link map} has the given key, false otherwise.
  */
 template<class K, class T> bool LRUCache<K, T>::contains(K key) {
-    return map.find(key) != map.end();
+    return _map.find(key) != _map.end();
 }
 
 /**
@@ -54,8 +54,8 @@ template<class K, class T> bool LRUCache<K, T>::contains(K key) {
  * @return data value if the {@link map} has the given key, nullptr otherwise.
  */
 template<class K, class T> T LRUCache<K, T>::get(K key) {
-    if (map.find(key) != map.end()) {
-        CacheNode<K, T>* cacheNode = map.find(key)->second;
+    if (_map.find(key) != _map.end()) {
+        CacheNode<K, T>* cacheNode = _map.find(key)->second;
         cache.remove(cacheNode);
         cache.add(cacheNode);
         return cacheNode->getData();
@@ -72,13 +72,13 @@ template<class K, class T> T LRUCache<K, T>::get(K key) {
  * @param data T type input.
  */
 template<class K, class T> void LRUCache<K, T>::add(K key, T data) {
-    if (map.size() == cacheSize) {
+    if (_map.size() == cacheSize) {
         CacheNode<K, T>* removed = cache.remove();
-        map.erase(removed->getKey());
+        _map.erase(removed->getKey());
     }
-    CacheNode<K, T>* cacheNode = new CacheNode<K, T>(key, data);
+    auto* cacheNode = new CacheNode<K, T>(key, data);
     cache.add(cacheNode);
-    map.insert_or_assign(key, cacheNode);
+    _map.insert_or_assign(key, cacheNode);
 }
 
 template<class K, class T>

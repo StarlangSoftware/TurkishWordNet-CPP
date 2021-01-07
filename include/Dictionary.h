@@ -28,6 +28,7 @@ public:
     Dictionary();
     explicit Dictionary(Comparator comparator);
     Word* getWord(string name);
+    void removeWord(string name);
     int getWordIndex(string name);
     bool wordExists(string name);
     unsigned long size();

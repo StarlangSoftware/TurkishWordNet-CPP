@@ -24,7 +24,7 @@ public:
     explicit FsmParse(Word* root);
     FsmParse() = default;
     FsmParse(int number, State startState);
-    FsmParse(double number, State startState);
+    FsmParse(double number, string stringValue, State startState);
     FsmParse(string punctuation, State startState);
     FsmParse(TxtWord* root, State startState);
     void constructInflectionalGroups();
@@ -43,7 +43,7 @@ public:
     FsmParse clone();
     string headerTransition();
     string pronounTransition();
-    string getTransitionList();
+    string transitionlist();
     string getSuffixList();
     string getWithList();
     string to_String();

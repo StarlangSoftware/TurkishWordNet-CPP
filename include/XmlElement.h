@@ -26,8 +26,10 @@ public:
     XmlElement* getFirstChild();
     XmlElement* getNextSibling();
     XmlElement* getParent();
-    void setAttributeValue(string attributeName, string attributeValue);
-    string getAttributeValue(string attributeName);
+    void setAttributeValue(const string& attributeName, const string& attributeValue);
+    string getAttributeValue(const string& attributeName);
+    int attributeSize();
+    XmlAttribute getAttribute(int index);
     void print(ofstream& outputStream, int level);
     void setNextSibling(XmlElement* nextSibling);
     void setFirstChild(XmlElement* firstChild);
