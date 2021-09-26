@@ -13,12 +13,12 @@ TEST_CASE("WordNetTest-testSynSetList") {
     for (SynSet synSet : turkish.getSynSetList()){
         literalCount += synSet.getSynonym().literalSize();
     }
-    REQUIRE(109049 == literalCount);
+    REQUIRE(109059 == literalCount);
 }
 
 TEST_CASE("WordNetTest-testLiteralList") {
     WordNet turkish = WordNet();
-    REQUIRE(81092 == turkish.getLiteralList().size());
+    REQUIRE(81070 == turkish.getLiteralList().size());
 }
 
 TEST_CASE("WordNetTest-testGetSynSetWithId") {
@@ -82,20 +82,20 @@ TEST_CASE("WordNetTest-testNumberOfSynSetsWithLiteral") {
     REQUIRE(38 == turkish.numberOfSynSetsWithLiteral("atmak"));
     REQUIRE(39 == turkish.numberOfSynSetsWithLiteral("geçmek"));
     REQUIRE(44 == turkish.numberOfSynSetsWithLiteral("çekmek"));
-    REQUIRE(51 == turkish.numberOfSynSetsWithLiteral("tutmak"));
+    REQUIRE(50 == turkish.numberOfSynSetsWithLiteral("tutmak"));
     REQUIRE(59 == turkish.numberOfSynSetsWithLiteral("çıkmak"));
 }
 
 TEST_CASE("WordNetTest-testGetSynSetsWithPartOfSpeech") {
     WordNet turkish = WordNet();
-    REQUIRE(44074 == turkish.getSynSetsWithPartOfSpeech(Pos::NOUN).size());
-    REQUIRE(17791 == turkish.getSynSetsWithPartOfSpeech(Pos::VERB).size());
-    REQUIRE(12416 == turkish.getSynSetsWithPartOfSpeech(Pos::ADJECTIVE).size());
-    REQUIRE(2550 == turkish.getSynSetsWithPartOfSpeech(Pos::ADVERB).size());
-    REQUIRE(342 == turkish.getSynSetsWithPartOfSpeech(Pos::INTERJECTION).size());
+    REQUIRE(44050 == turkish.getSynSetsWithPartOfSpeech(Pos::NOUN).size());
+    REQUIRE(17773 == turkish.getSynSetsWithPartOfSpeech(Pos::VERB).size());
+    REQUIRE(12410 == turkish.getSynSetsWithPartOfSpeech(Pos::ADJECTIVE).size());
+    REQUIRE(2548 == turkish.getSynSetsWithPartOfSpeech(Pos::ADVERB).size());
+    REQUIRE(339 == turkish.getSynSetsWithPartOfSpeech(Pos::INTERJECTION).size());
     REQUIRE(68 == turkish.getSynSetsWithPartOfSpeech(Pos::PRONOUN).size());
-    REQUIRE(60 == turkish.getSynSetsWithPartOfSpeech(Pos::CONJUNCTION).size());
-    REQUIRE(29 == turkish.getSynSetsWithPartOfSpeech(Pos::PREPOSITION).size());
+    REQUIRE(61 == turkish.getSynSetsWithPartOfSpeech(Pos::CONJUNCTION).size());
+    REQUIRE(30 == turkish.getSynSetsWithPartOfSpeech(Pos::PREPOSITION).size());
 }
 
 TEST_CASE("WordNetTest-testGetInterlingual") {
@@ -114,7 +114,7 @@ TEST_CASE("WordNetTest-testGetInterlingual") {
 
 TEST_CASE("WordNetTest-testSize") {
     WordNet turkish = WordNet();
-    REQUIRE(77330 == turkish.size());
+    REQUIRE(77279 == turkish.size());
 }
 
 TEST_CASE("WordNetTest-testFindPathToRoot") {
@@ -132,8 +132,8 @@ TEST_CASE("WordNetTest-testFindPathToRoot") {
     REQUIRE(11 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-0226380")).size());
     REQUIRE(12 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-0490230")).size());
     REQUIRE(13 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-1198750")).size());
-    REQUIRE(14 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-0412120")).size());
-    REQUIRE(15 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-1116690")).size());
+    REQUIRE(12 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-0412120")).size());
+    REQUIRE(13 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-1116690")).size());
     REQUIRE(13 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-0621870")).size());
     REQUIRE(14 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-0822980")).size());
     REQUIRE(15 == turkish.findPathToRoot(turkish.getSynSetWithId("TUR10-0178450")).size());
