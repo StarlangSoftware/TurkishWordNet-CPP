@@ -53,7 +53,7 @@ Each entry in the dictionary is enclosed by <SYNSET> and </SYNSET> tags. Synset 
 For Developers
 ============
 
-You can also see [Java](https://github.com/starlangsoftware/TurkishWordNet), [Python](https://github.com/starlangsoftware/TurkishWordNet-Py), [Cython](https://github.com/starlangsoftware/TurkishWordNet-Cy), [Swift](https://github.com/starlangsoftware/TurkishWordNet-Swift), or [C#](https://github.com/starlangsoftware/TurkishWordNet-CS) repository.
+You can also see [Java](https://github.com/starlangsoftware/TurkishWordNet), [Python](https://github.com/starlangsoftware/TurkishWordNet-Py), [Cython](https://github.com/starlangsoftware/TurkishWordNet-Cy), [Swift](https://github.com/starlangsoftware/TurkishWordNet-Swift), [Js](https://github.com/starlangsoftware/TurkishWordNet-Js), or [C#](https://github.com/starlangsoftware/TurkishWordNet-CS) repository.
 
 ## Requirements
 
