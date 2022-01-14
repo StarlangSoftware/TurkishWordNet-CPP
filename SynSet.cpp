@@ -540,6 +540,9 @@ void SynSet::saveAsXml(ofstream& outfile) {
     for (Relation* r:relations){
         outfile << r->to_xml();
     }
+    if (!wikiPage.empty()){
+        outfile << "<WIKI>" + getWikiPage() + "</WIKI>";
+    }
     if (!definition.empty()){
         outfile << "<DEF>" + getLongDefinition() + "</DEF>";
     }
