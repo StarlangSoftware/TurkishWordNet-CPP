@@ -121,6 +121,10 @@ void WordNet::readWordNet(string fileName) {
                                         } else {
                                             if (partNode->getName() == "SNOTE") {
                                                 currentSynSet->second.setNote(partNode->getPcData());
+                                            } else {
+                                                if (partNode->getName() == "WIKI"){
+                                                    currentSynSet->second.setWikiPage(partNode->getPcData());
+                                                }
                                             }
                                         }
                                     }

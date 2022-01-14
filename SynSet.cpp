@@ -292,6 +292,24 @@ string SynSet::getNote() {
 }
 
 /**
+ * Mutator for the wiki pages.
+ *
+ * @param note String Wiki page to be set
+ */
+void SynSet::setWikiPage(string wikiPage) {
+    this->wikiPage = move(wikiPage);
+}
+
+/**
+ * Accessor for the wiki page.
+ *
+ * @return String wiki page
+ */
+string SynSet::getWikiPage() {
+    return wikiPage;
+}
+
+/**
  * Appends the specified Relation to the end of relations list.
  *
  * @param relation element to be appended to the list

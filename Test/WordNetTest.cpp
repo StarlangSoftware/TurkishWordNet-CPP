@@ -13,12 +13,12 @@ TEST_CASE("WordNetTest-testSynSetList") {
     for (SynSet synSet : turkish.getSynSetList()){
         literalCount += synSet.getSynonym().literalSize();
     }
-    REQUIRE(109059 == literalCount);
+    REQUIRE(109007 == literalCount);
 }
 
 TEST_CASE("WordNetTest-testLiteralList") {
     WordNet turkish = WordNet();
-    REQUIRE(81070 == turkish.getLiteralList().size());
+    REQUIRE(81062 == turkish.getLiteralList().size());
 }
 
 TEST_CASE("WordNetTest-testGetSynSetWithId") {
@@ -114,7 +114,7 @@ TEST_CASE("WordNetTest-testGetInterlingual") {
 
 TEST_CASE("WordNetTest-testSize") {
     WordNet turkish = WordNet();
-    REQUIRE(77279 == turkish.size());
+    REQUIRE(77100 == turkish.size());
 }
 
 TEST_CASE("WordNetTest-testFindPathToRoot") {

@@ -21,6 +21,7 @@ private:
     Synonym synonym;
     vector<Relation*> relations;
     string note;
+    string wikiPage;
     int bcs;
 public:
     bool operator==(const SynSet &anotherSynSet) const{
@@ -47,6 +48,8 @@ public:
     Pos getPos();
     void setNote(string note);
     string getNote();
+    void setWikiPage(string wikiPage);
+    string getWikiPage();
     void addRelation(Relation* relation);
     void removeRelation(Relation* relation);
     void removeRelation(string name);
