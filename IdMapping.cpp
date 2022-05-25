@@ -64,11 +64,11 @@ vector<string> IdMapping::keySet() {
  * @return value of the specified key
  */
 string IdMapping::mapTo(string id) {
-    if (map.find(id) == map.end()){
+    if (!map.contains(id)){
         return "";
     }
     string mappedId = map.find(id)->second;
-    while (map.find(mappedId) != map.end()){
+    while (map.contains(mappedId)){
         mappedId = map.find(id)->second;
     }
     return mappedId;

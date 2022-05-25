@@ -80,7 +80,7 @@ void WordNet::readWordNet(string fileName) {
                                         if (typeNode != nullptr && typeNode->getName() == "TYPE") {
                                             string interlingualId = partNode->getPcData();
                                             vector<SynSet> synSetList;
-                                            if (interlingualList.find(interlingualId) != interlingualList.end()){
+                                            if (interlingualList.contains(interlingualId)){
                                                 synSetList = interlingualList.find(interlingualId)->second;
                                             }
                                             synSetList.emplace_back(currentSynSet->second);
@@ -220,7 +220,7 @@ WordNet::WordNet(string fileName, string exceptionFileName) {
  */
 void WordNet::addLiteralToLiteralList(Literal literal) {
     vector<Literal> literals;
-    if (literalList.find(literal.getName()) != literalList.end()){
+    if (literalList.contains(literal.getName())){
         literals = literalList.find(literal.getName())->second;
     }
     literals.emplace_back(literal);
@@ -304,7 +304,7 @@ void WordNet::removeSynSet(SynSet s) {
  * @return SynSet with the specified SynSet ID
  */
 SynSet* WordNet::getSynSetWithId(string synSetId) {
-    if (synSetList.find(synSetId) != synSetList.end()){
+    if (synSetList.contains(synSetId)){
         return &(synSetList.find(synSetId)->second);
     } else {
         return nullptr;
@@ -336,7 +336,7 @@ SynSet* WordNet::getSynSetWithLiteral(string literal, int sense) {
  * @return the number of SynSets with a specified literal
  */
 int WordNet::numberOfSynSetsWithLiteral(string literal) {
-    if (literalList.find(literal) != literalList.end()){
+    if (literalList.contains(literal)){
         return literalList.find(literal)->second.size();
     } else {
         return 0;
@@ -366,7 +366,7 @@ vector<SynSet> WordNet::getSynSetsWithPartOfSpeech(Pos pos) {
  * @return a list of literals with a specified literal String
  */
 vector<Literal> WordNet::getLiteralsWithName(string literal) {
-    if (literalList.find(literal) != literalList.end()){
+    if (literalList.contains(literal)){
         return literalList.find(literal)->second;
     } else {
         return vector<Literal>();
@@ -399,7 +399,7 @@ void WordNet::addSynSetsWithLiteralToList(vector<SynSet> result, string literal,
 vector<SynSet> WordNet::getSynSetsWithLiteral(string literal) {
     SynSet* synSet;
     vector<SynSet> result;
-    if (literalList.find(literal) != literalList.end()){
+    if (literalList.contains(literal)){
         for (Literal current : literalList.find(literal)->second){
             synSet = getSynSetWithId(current.getSynSetId());
             if (synSet != nullptr){
@@ -419,7 +419,7 @@ vector<SynSet> WordNet::getSynSetsWithLiteral(string literal) {
 vector<string> WordNet::getLiteralsWithPossibleModifiedLiteral(string literal) {
     vector<string> result;
     result.emplace_back(literal);
-    if (exceptionList.find(literal) != exceptionList.end() && literalList.find(exceptionList.find(literal)->second.getRoot()) != literalList.end()){
+    if (exceptionList.contains(literal) && literalList.contains(exceptionList.find(literal)->second.getRoot())){
         result.emplace_back(exceptionList.find(literal)->second.getRoot());
     }
     if (Word::endsWith(literal, "s") && literalList.find(literal.substr(0, literal.length() - 1)) != literalList.end()){
@@ -475,7 +475,7 @@ vector<SynSet> WordNet::getSynSetsWithPossiblyModifiedLiteral(string literal, Po
     vector<SynSet> result;
     vector<string> modifiedLiterals = getLiteralsWithPossibleModifiedLiteral(move(literal));
     for (const string &modifiedLiteral : modifiedLiterals){
-        if (literalList.find(modifiedLiteral) != literalList.end()){
+        if (literalList.contains(modifiedLiteral)){
             addSynSetsWithLiteralToList(result, modifiedLiteral, pos);
         }
     }
@@ -806,7 +806,7 @@ void WordNet::sortDefinitions() {
  * @return a list of SynSets with the interlingual relations of a specified SynSet ID
  */
 vector<SynSet> WordNet::getInterlingual(string synSetId) {
-    if (interlingualList.find(synSetId) != interlingualList.end()){
+    if (interlingualList.contains(synSetId)){
         return interlingualList.find(synSetId)->second;
     } else {
         return vector<SynSet>();
