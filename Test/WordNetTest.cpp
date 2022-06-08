@@ -13,12 +13,12 @@ TEST_CASE("WordNetTest-testSynSetList") {
     for (SynSet synSet : turkish.getSynSetList()){
         literalCount += synSet.getSynonym().literalSize();
     }
-    REQUIRE(110240 == literalCount);
+    REQUIRE(110236 == literalCount);
 }
 
 TEST_CASE("WordNetTest-testLiteralList") {
     WordNet turkish = WordNet();
-    REQUIRE(82256 == turkish.getLiteralList().size());
+    REQUIRE(82255 == turkish.getLiteralList().size());
 }
 
 TEST_CASE("WordNetTest-testGetSynSetWithId") {
@@ -89,8 +89,8 @@ TEST_CASE("WordNetTest-testNumberOfSynSetsWithLiteral") {
 TEST_CASE("WordNetTest-testGetSynSetsWithPartOfSpeech") {
     WordNet turkish = WordNet();
     REQUIRE(43869 == turkish.getSynSetsWithPartOfSpeech(Pos::NOUN).size());
-    REQUIRE(17776 == turkish.getSynSetsWithPartOfSpeech(Pos::VERB).size());
-    REQUIRE(12406 == turkish.getSynSetsWithPartOfSpeech(Pos::ADJECTIVE).size());
+    REQUIRE(17772 == turkish.getSynSetsWithPartOfSpeech(Pos::VERB).size());
+    REQUIRE(12410 == turkish.getSynSetsWithPartOfSpeech(Pos::ADJECTIVE).size());
     REQUIRE(2549 == turkish.getSynSetsWithPartOfSpeech(Pos::ADVERB).size());
     REQUIRE(1552 == turkish.getSynSetsWithPartOfSpeech(Pos::INTERJECTION).size());
     REQUIRE(68 == turkish.getSynSetsWithPartOfSpeech(Pos::PRONOUN).size());
