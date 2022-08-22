@@ -3,8 +3,8 @@
 //
 
 #include "catch.hpp"
-#include "../WordNet.h"
-#include "../Similarity/LCH.h"
+#include "../src/WordNet.h"
+#include "../src/Similarity/LCH.h"
 
 TEST_CASE("LCHTest-testComputeSimilarity") {
     WordNet turkish = WordNet();
