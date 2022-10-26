@@ -24,8 +24,8 @@ const SemanticRelationType SemanticRelation::semanticDependencyTags[SEMANTIC_DEP
  * @param name         name of the relation
  * @param relationType String semantic dependency tag
  */
-SemanticRelation::SemanticRelation(string name, string relationType, int toIndex) : Relation(move(name)){
-    this->relationType = getSemanticTag(move(relationType));
+SemanticRelation::SemanticRelation(const string& name, const string& relationType, int toIndex) : Relation(name){
+    this->relationType = getSemanticTag(relationType);
     this->toIndex = toIndex;
 }
 
@@ -36,7 +36,7 @@ SemanticRelation::SemanticRelation(string name, string relationType, int toIndex
  * @param relationType String semantic dependency tag
  * @param toIndex      index of the relation
  */
-SemanticRelation::SemanticRelation(string name, SemanticRelationType relationType, int toIndex) : Relation(move(name)){
+SemanticRelation::SemanticRelation(const string& name, SemanticRelationType relationType, int toIndex) : Relation(name){
     this->relationType = relationType;
     this->toIndex = toIndex;
 }
@@ -47,7 +47,7 @@ SemanticRelation::SemanticRelation(string name, SemanticRelationType relationTyp
  * @param tag String semantic dependency tag
  * @return semantic relation type
  */
-SemanticRelationType SemanticRelation::getSemanticTag(string tag) {
+SemanticRelationType SemanticRelation::getSemanticTag(const string& tag){
     for (int j = 0; j < SEMANTIC_DEPENDENCY_SIZE; j++) {
         if (tag == SemanticRelation::semanticDependency[j]) {
             return SemanticRelation::semanticDependencyTags[j];
@@ -61,7 +61,7 @@ SemanticRelationType SemanticRelation::getSemanticTag(string tag) {
  * @param semanticRelationType semantic relation type to be reversed
  * @return reversed version of the semantic relation type
  */
-SemanticRelationType SemanticRelation::reverse(SemanticRelationType semanticRelationType) {
+SemanticRelationType SemanticRelation::reverse(SemanticRelationType semanticRelationType){
     switch (semanticRelationType){
         case SemanticRelationType::HYPERNYM:
             return SemanticRelationType::HYPONYM;
@@ -109,7 +109,7 @@ SemanticRelationType SemanticRelation::reverse(SemanticRelationType semanticRela
  *
  * @return index value.
  */
-int SemanticRelation::getToIndex() {
+int SemanticRelation::getToIndex() const{
     return toIndex;
 }
 
@@ -118,17 +118,17 @@ int SemanticRelation::getToIndex() {
  *
  * @return semantic relation type
  */
-SemanticRelationType SemanticRelation::getRelationType(){
+SemanticRelationType SemanticRelation::getRelationType() const{
     return relationType;
 }
 
 /**
  * Mutator for the semantic relation type.
  *
- * @param relationType semantic relation type.
+ * @param _relationType semantic relation type.
  */
-void SemanticRelation::setRelationType(SemanticRelationType relationType){
-    this->relationType = relationType;
+void SemanticRelation::setRelationType(SemanticRelationType _relationType){
+    this->relationType = _relationType;
 }
 
 /**
@@ -136,7 +136,7 @@ void SemanticRelation::setRelationType(SemanticRelationType relationType){
  *
  * @return String semantic relation type
  */
-string SemanticRelation::getTypeAsString(){
+string SemanticRelation::getTypeAsString() const{
     return SemanticRelation::semanticDependency[static_cast<int>(relationType)];
 }
 
@@ -145,11 +145,11 @@ string SemanticRelation::getTypeAsString(){
  *
  * @return semantic relation types and names
  */
-string SemanticRelation::to_string() {
+string SemanticRelation::to_string() const{
     return getTypeAsString() + "->" + name;
 }
 
-string SemanticRelation::to_xml() {
+string SemanticRelation::to_xml() const{
     if (toIndex == 0){
         return "<SR>" + name + "<TYPE>" + getTypeAsString() + "</TYPE></SR>";
     } else {

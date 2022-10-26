@@ -10,7 +10,7 @@
  *
  * @param literal element to be appended to the list
  */
-void Synonym::addLiteral(Literal literal) {
+void Synonym::addLiteral(const Literal& literal) {
     literals.emplace_back(literal);
 }
 
@@ -20,7 +20,7 @@ void Synonym::addLiteral(Literal literal) {
  * @param index index of the element to return
  * @return the element at the specified position in the list
  */
-Literal Synonym::getLiteral(int index) {
+Literal Synonym::getLiteral(int index) const{
     return literals.at(index);
 }
 
@@ -30,7 +30,7 @@ Literal Synonym::getLiteral(int index) {
  * @param name name of the element to return
  * @return the element with the specified name in the list
  */
-Literal Synonym::getLiteral(string name) {
+Literal Synonym::getLiteral(const string& name) const{
     for (Literal literal:literals){
         if (literal.getName() == name){
             return literal;
@@ -43,7 +43,7 @@ Literal Synonym::getLiteral(string name) {
  *
  * @return the size of the list
  */
-int Synonym::literalSize() {
+int Synonym::literalSize() const{
     return literals.size();
 }
 
@@ -53,7 +53,7 @@ int Synonym::literalSize() {
  * @param literal element whose presence in the list is to be tested
  * @return <tt>true</tt> if the list contains the specified element
  */
-bool Synonym::contains(Literal literal) {
+bool Synonym::contains(const Literal& literal) const{
     for (const Literal &current : literals){
         if (current == literal){
             return true;
@@ -68,8 +68,8 @@ bool Synonym::contains(Literal literal) {
  * @param literalName element whose presence in the list is to be tested
  * @return<tt>true</tt> if the list contains the specified element
  */
-bool Synonym::containsLiteral(string literalName) {
-    for (Literal current : literals){
+bool Synonym::containsLiteral(const string& literalName) const{
+    for (const Literal& current : literals){
         if (current.getName() == literalName){
             return true;
         }
@@ -83,7 +83,7 @@ bool Synonym::containsLiteral(string literalName) {
  *
  * @param toBeRemoved element to be removed from the list, if present
  */
-void Synonym::removeLiteral(Literal toBeRemoved) {
+void Synonym::removeLiteral(const Literal& toBeRemoved) {
     for (auto it = literals.begin() ; it != literals.end(); ++it){
         if (*it == toBeRemoved){
             literals.erase(it);
@@ -110,9 +110,9 @@ void Synonym::saveAsXml(ofstream& outfile) {
  *
  * @return concatenated literals
  */
-string Synonym::to_string() {
+string Synonym::to_string() const{
     string result;
-    for (Literal literal : literals){
+    for (const Literal& literal : literals){
         result += literal.getName() + " ";
     }
     return result;

@@ -14,13 +14,13 @@ private:
     map<string, string> map;
 public:
     IdMapping();
-    explicit IdMapping(string fileName);
-    vector<string> keySet();
-    string mapTo(string id);
-    string singleMap(string id);
-    void add(string key, string value);
-    void remove(string key);
-    void save(string fileName);
+    explicit IdMapping(const string& fileName);
+    vector<string> keySet() const;
+    string mapTo(const string& id) const;
+    string singleMap(const string& id) const;
+    void add(const string& key, const string& value);
+    void remove(const string& key);
+    void save(const string& fileName);
 };
 
 

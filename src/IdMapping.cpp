@@ -5,7 +5,6 @@
 #include <fstream>
 #include "Dictionary/Word.h"
 #include <vector>
-#include <map>
 #include "IdMapping.h"
 
 /**
@@ -30,7 +29,7 @@ IdMapping::IdMapping() {
  *
  * @param fileName String file name input that will be read
  */
-IdMapping::IdMapping(string fileName) {
+IdMapping::IdMapping(const string& fileName) {
     ifstream inputFile;
     string s;
     inputFile.open(fileName, ifstream :: in);
@@ -49,11 +48,12 @@ IdMapping::IdMapping(string fileName) {
  *
  * @return a set view of the keys contained in this map
  */
-vector<string> IdMapping::keySet() {
+vector<string> IdMapping::keySet() const{
     vector<string> keySet;
     for (auto &it : map) {
         keySet.emplace_back(it.first);
     }
+    return keySet;
 }
 
 /**
@@ -63,7 +63,7 @@ vector<string> IdMapping::keySet() {
  * @param id String id of a key
  * @return value of the specified key
  */
-string IdMapping::mapTo(string id) {
+string IdMapping::mapTo(const string& id) const{
     if (!map.contains(id)){
         return "";
     }
@@ -80,7 +80,7 @@ string IdMapping::mapTo(string id) {
  * @param id String id of a key
  * @return value of the specified key
  */
-string IdMapping::singleMap(string id) {
+string IdMapping::singleMap(const string& id) const{
     return map.find(id)->second;
 }
 
@@ -90,7 +90,7 @@ string IdMapping::singleMap(string id) {
  * @param key   key with which the specified value is to be associated
  * @param value value to be associated with the specified key
  */
-void IdMapping::add(string key, string value) {
+void IdMapping::add(const string& key, const string& value) {
     map.emplace(key, value);
 }
 
@@ -99,7 +99,7 @@ void IdMapping::add(string key, string value) {
  *
  * @param key key whose mapping is to be removed from the map
  */
-void IdMapping::remove(string key) {
+void IdMapping::remove(const string& key) {
     map.erase(key);
 }
 
@@ -108,7 +108,7 @@ void IdMapping::remove(string key) {
  *
  * @param fileName String file to write map
  */
-void IdMapping::save(string fileName) {
+void IdMapping::save(const string& fileName) {
     ofstream outputFile;
     outputFile.open(fileName, ofstream :: out);
     for (auto &it : map) {

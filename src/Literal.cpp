@@ -13,10 +13,10 @@
  * @param sense    index of sense
  * @param synSetId ID of the SynSet
  */
-Literal::Literal(string name, int sense, string synSetId) {
-    this->name = move(name);
+Literal::Literal(const string& name, int sense, const string& synSetId) {
+    this->name = name;
     this->sense = sense;
-    this->synSetId = move(synSetId);
+    this->synSetId = synSetId;
 }
 
 /**
@@ -24,7 +24,7 @@ Literal::Literal(string name, int sense, string synSetId) {
  *
  * @return String of SynSet ID
  */
-string Literal::getSynSetId() {
+string Literal::getSynSetId() const{
     return synSetId;
 }
 
@@ -33,7 +33,7 @@ string Literal::getSynSetId() {
  *
  * @return name of the literal
  */
-string Literal::getName() {
+string Literal::getName() const{
     return name;
 }
 
@@ -42,7 +42,7 @@ string Literal::getName() {
  *
  * @return index of sense of the literal
  */
-int Literal::getSense() {
+int Literal::getSense() const{
     return sense;
 }
 
@@ -51,26 +51,26 @@ int Literal::getSense() {
  *
  * @return origin of the literal
  */
-string Literal::getOrigin() {
+string Literal::getOrigin() const{
     return origin;
 }
 
 /**
  * Mutator method to set the origin with specified origin.
  *
- * @param origin origin of the literal to set
+ * @param _origin origin of the literal to set
  */
-void Literal::setOrigin(string origin) {
-    this->origin = move(origin);
+void Literal::setOrigin(const string& _origin) {
+    this->origin = _origin;
 }
 
 /**
  * Mutator method to set the sense index of the literal.
  *
- * @param sense sense index of the literal to set
+ * @param _sense sense index of the literal to set
  */
-void Literal::setSense(int sense) {
-    this->sense = sense;
+void Literal::setSense(int _sense) {
+    this->sense = _sense;
 }
 
 /**
@@ -103,7 +103,7 @@ void Literal::removeRelation(Relation *relation) {
  * @param relation element whose presence in the list is to be tested
  * @return <tt>true</tt> if the list contains the specified element
  */
-bool Literal::containsRelation(Relation *relation) {
+bool Literal::containsRelation(Relation *relation) const{
     for (Relation* r : relations){
         if (*r == *relation){
             return true;
@@ -118,9 +118,9 @@ bool Literal::containsRelation(Relation *relation) {
  * @param semanticRelationType element whose presence in the list is to be tested
  * @return <<tt>true</tt> if specified semantic relation type presents in the relations list
  */
-bool Literal::containsRelationType(SemanticRelationType semanticRelationType) {
+bool Literal::containsRelationType(SemanticRelationType semanticRelationType) const{
     for (Relation* relation : relations){
-        if (SemanticRelation* semanticRelation = dynamic_cast<SemanticRelation*>(relation)){
+        if (auto* semanticRelation = (SemanticRelation*)(relation)){
             if (semanticRelation->getRelationType() == semanticRelationType){
                 return true;
             }
@@ -135,7 +135,7 @@ bool Literal::containsRelationType(SemanticRelationType semanticRelationType) {
  * @param index index of the element to return
  * @return the element at the specified position in the list
  */
-Relation* Literal::getRelation(int index){
+Relation* Literal::getRelation(int index) const{
     return relations.at(index);
 }
 
@@ -144,26 +144,26 @@ Relation* Literal::getRelation(int index){
  *
  * @return the size of the list
  */
-int Literal::relationSize(){
+int Literal::relationSize() const{
     return relations.size();
 }
 
 /**
  * Mutator method to set name of a literal.
  *
- * @param name name of the literal to set
+ * @param _name name of the literal to set
  */
-void Literal::setName(string name){
-    this->name = move(name);
+void Literal::setName(const string& _name){
+    this->name = _name;
 }
 
 /**
  * Mutator method to set SynSet ID of a literal.
  *
- * @param synSetId SynSet ID of the literal to set
+ * @param _synSetId SynSet ID of the literal to set
  */
-void Literal::setSynSetId(string synSetId){
-    this->synSetId = move(synSetId);
+void Literal::setSynSetId(const string& _synSetId){
+    this->synSetId = _synSetId;
 }
 
 /**
@@ -171,7 +171,7 @@ void Literal::setSynSetId(string synSetId){
  *
  * @return concatenated names and senses of literals
  */
-string Literal::to_string(){
+string Literal::to_string() const{
     return name + " " + std::to_string(sense);
 }
 

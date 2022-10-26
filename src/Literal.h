@@ -24,22 +24,22 @@ public:
         return (name == anotherLiteral.name && sense == anotherLiteral.sense);
     }
     Literal() = default;
-    Literal(string name, int sense, string synSetId);
-    string getSynSetId();
-    string getName();
-    int getSense();
-    string getOrigin();
-    void setOrigin(string origin);
+    Literal(const string& name, int sense, const string& synSetId);
+    string getSynSetId() const;
+    string getName() const;
+    int getSense() const;
+    string getOrigin() const;
+    void setOrigin(const string& origin);
     void setSense(int sense);
     void addRelation(Relation* relation);
     void removeRelation(Relation* relation);
-    bool containsRelation(Relation* relation);
-    bool containsRelationType(SemanticRelationType semanticRelationType);
-    Relation* getRelation(int index);
-    int relationSize();
-    void setName(string name);
-    void setSynSetId(string synSetId);
-    string to_string();
+    bool containsRelation(Relation* relation) const;
+    bool containsRelationType(SemanticRelationType semanticRelationType) const;
+    Relation* getRelation(int index) const;
+    int relationSize() const;
+    void setName(const string& name);
+    void setSynSetId(const string& synSetId);
+    string to_string() const;
     void saveAsXml(ofstream& outfile);
 };
 

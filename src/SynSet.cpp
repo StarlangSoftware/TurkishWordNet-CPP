@@ -13,8 +13,8 @@
  *
  * @param id Synset ID
  */
-SynSet::SynSet(string id) {
-    this->id = move(id);
+SynSet::SynSet(const string& id) {
+    this->id = id;
 }
 
 /**
@@ -22,46 +22,46 @@ SynSet::SynSet(string id) {
  *
  * @return SynSet ID
  */
-string SynSet::getId() {
+string SynSet::getId() const{
     return id;
 }
 
 /**
  * Mutator method for the SynSet ID.
  *
- * @param id SynSet ID to be set
+ * @param _id SynSet ID to be set
  */
-void SynSet::setId(string id) {
+void SynSet::setId(const string& _id) {
     for (int i = 0; i < getSynonym().literalSize(); i++){
-        synonym.getLiteral(i).setSynSetId(id);
+        synonym.getLiteral(i).setSynSetId(_id);
     }
-    this->id = move(id);
+    this->id = _id;
 }
 
 /**
- * Mutator method for the definition.
+ * Mutator method for the _definition.
  *
- * @param definition String definition
+ * @param _definition String _definition
  */
-void SynSet::setDefinition(string definition) {
-    this->definition = Word::split(move(definition), "|");
+void SynSet::setDefinition(const string& _definition) {
+    this->definition = Word::split(_definition, "|");
 }
 
 /**
- * Removes the specified definition from long definition.
+ * Removes the specified _definition from long _definition.
  *
- * @param definition definition to be removed
+ * @param _definition _definition to be removed
  */
-void SynSet::removeDefinition(string definition) {
+void SynSet::removeDefinition(const string& _definition) {
     string longDefinition = getLongDefinition();
-    if (Word::startsWith(longDefinition, definition + "|")){
-        setDefinition(Word::replaceAll(longDefinition, definition + "|", ""));
+    if (Word::startsWith(longDefinition, _definition + "|")){
+        setDefinition(Word::replaceAll(longDefinition, _definition + "|", ""));
     } else {
-        if (Word::endsWith(longDefinition, "|" + definition)){
-            setDefinition(Word::replaceAll(longDefinition, "|" + definition, ""));
+        if (Word::endsWith(longDefinition, "|" + _definition)){
+            setDefinition(Word::replaceAll(longDefinition, "|" + _definition, ""));
         } else {
-            if (longDefinition.find("|" + definition + "|") != string::npos){
-                setDefinition(Word::replaceAll(longDefinition, "|" + definition, ""));
+            if (longDefinition.find("|" + _definition + "|") != string::npos){
+                setDefinition(Word::replaceAll(longDefinition, "|" + _definition, ""));
             }
         }
     }
@@ -73,70 +73,70 @@ void SynSet::removeDefinition(string definition) {
  * @param locale Locale of the programme that will be used in converting upper/lower cases
  */
 void SynSet::removeSameDefinitions() {
-    string definition = getLongDefinition();
+    string _definition = getLongDefinition();
     bool removed = true;
-    while (!definition.empty() && removed){
+    while (!_definition.empty() && removed){
         removed = false;
         for (int j = 0; j < getSynonym().literalSize(); j++){
             Literal literal = getSynonym().getLiteral(j);
             string word = literal.getName();
             string uppercaseWord = Word::substring(literal.getName(), 0, 1) + Word::substring(literal.getName(), 1);
-            if (definition.find("|" + word + "|") != string::npos){
-                definition = Word::replaceAll(definition, "|" + word + "|", "|");
+            if (_definition.find("|" + word + "|") != string::npos){
+                _definition = Word::replaceAll(_definition, "|" + word + "|", "|");
                 removed = true;
             }
-            if (definition.find("|" + word + "; ") != string::npos){
-                definition = Word::replaceAll(definition, "|" + word + "; ", "|");
+            if (_definition.find("|" + word + "; ") != string::npos){
+                _definition = Word::replaceAll(_definition, "|" + word + "; ", "|");
                 removed = true;
             }
-            if (definition.find("|" + uppercaseWord + "|") != string::npos){
-                definition = Word::replaceAll(definition, "|" + uppercaseWord + "|", "|");
+            if (_definition.find("|" + uppercaseWord + "|") != string::npos){
+                _definition = Word::replaceAll(_definition, "|" + uppercaseWord + "|", "|");
                 removed = true;
             }
-            if (definition.find("|" + uppercaseWord + "; ") != string::npos){
-                definition = Word::replaceAll(definition, "|" + uppercaseWord + "; ", "|");
+            if (_definition.find("|" + uppercaseWord + "; ") != string::npos){
+                _definition = Word::replaceAll(_definition, "|" + uppercaseWord + "; ", "|");
                 removed = true;
             }
-            if (definition.find("; " + word + "|") != string::npos){
-                definition = Word::replaceAll(definition, "; " + word + "|", "|");
+            if (_definition.find("; " + word + "|") != string::npos){
+                _definition = Word::replaceAll(_definition, "; " + word + "|", "|");
                 removed = true;
             }
-            if (definition.find("; " + uppercaseWord + "|") != string::npos){
-                definition = Word::replaceAll(definition, "; " + uppercaseWord + "|", "|");
+            if (_definition.find("; " + uppercaseWord + "|") != string::npos){
+                _definition = Word::replaceAll(_definition, "; " + uppercaseWord + "|", "|");
                 removed = true;
             }
-            if (Word::endsWith(definition, "; " + word)){
-                definition = Word::replaceAll(definition, "; " + word, "");
+            if (Word::endsWith(_definition, "; " + word)){
+                _definition = Word::replaceAll(_definition, "; " + word, "");
                 removed = true;
             }
-            if (Word::endsWith(definition, "|" + word)){
-                definition = Word::replaceAll(definition, "|" + word, "");
+            if (Word::endsWith(_definition, "|" + word)){
+                _definition = Word::replaceAll(_definition, "|" + word, "");
                 removed = true;
             }
-            if (Word::startsWith(definition, word + "|")){
-                definition = Word::replaceAll(definition, word + "|", "");
+            if (Word::startsWith(_definition, word + "|")){
+                _definition = Word::replaceAll(_definition, word + "|", "");
                 removed = true;
             }
-            if (Word::startsWith(definition, uppercaseWord + "|")){
-                definition = Word::replaceAll(definition, uppercaseWord + "|", "");
+            if (Word::startsWith(_definition, uppercaseWord + "|")){
+                _definition = Word::replaceAll(_definition, uppercaseWord + "|", "");
                 removed = true;
             }
-            if (Word::endsWith(definition, "; " + uppercaseWord)){
-                definition = Word::replaceAll(definition, "; " + uppercaseWord, "");
+            if (Word::endsWith(_definition, "; " + uppercaseWord)){
+                _definition = Word::replaceAll(_definition, "; " + uppercaseWord, "");
                 removed = true;
             }
-            if (Word::endsWith(definition, "|" + uppercaseWord)){
-                definition = Word::replaceAll(definition, "|" + uppercaseWord, "");
+            if (Word::endsWith(_definition, "|" + uppercaseWord)){
+                _definition = Word::replaceAll(_definition, "|" + uppercaseWord, "");
                 removed = true;
             }
-            if (definition == word){
-                definition = "";
+            if (_definition == word){
+                _definition = "";
                 removed = true;
             }
         }
     }
-    if (!definition.empty() && definition.length() > 0){
-        setDefinition(definition);
+    if (!_definition.empty() && _definition.length() > 0){
+        setDefinition(_definition);
     } else {
         setDefinition("NO DEFINITION");
     }
@@ -147,7 +147,7 @@ void SynSet::removeSameDefinitions() {
  *
  * @return definition
  */
-string SynSet::getDefinition() {
+string SynSet::getDefinition() const{
     if (!definition.empty()){
         return definition.at(0);
     }
@@ -158,7 +158,7 @@ string SynSet::getDefinition() {
  *
  * @return the first literal's name.
  */
-string SynSet::representative() {
+string SynSet::representative() const{
     return getSynonym().getLiteral(0).getName();
 }
 
@@ -167,7 +167,7 @@ string SynSet::representative() {
  *
  * @return all the definitions
  */
-string SynSet::getLongDefinition() {
+string SynSet::getLongDefinition() const{
     if (!definition.empty()){
         string longDefinition = definition.at(0);
         for (int i = 1; i < definition.size(); i++){
@@ -200,7 +200,7 @@ void SynSet::sortDefinitions() {
  * @param index definition index to be accessed
  * @return definition at specified index
  */
-string SynSet::getDefinition(int index) {
+string SynSet::getDefinition(int index) const{
     if (index < definition.size() && index >= 0){
         return definition[index];
     } else {
@@ -213,17 +213,17 @@ string SynSet::getDefinition(int index) {
  *
  * @return number of definitions in the list.
  */
-int SynSet::numberOfDefinitions() {
+int SynSet::numberOfDefinitions() const{
     return definition.size();
 }
 
 /**
- * Mutator for the example.
+ * Mutator for the _example.
  *
- * @param example String that will be used to set
+ * @param _example String that will be used to set
  */
-void SynSet::setExample(string example) {
-    this->example = move(example);
+void SynSet::setExample(const string& _example) {
+    this->example = _example;
 }
 
 /**
@@ -231,18 +231,18 @@ void SynSet::setExample(string example) {
  *
  * @return String example
  */
-string SynSet::getExample() {
+string SynSet::getExample() const{
     return example;
 }
 
 /**
- * Mutator for the bcs value which enables the connection with the BalkaNet.
+ * Mutator for the _bcs value which enables the connection with the BalkaNet.
  *
- * @param bcs bcs value
+ * @param _bcs _bcs value
  */
-void SynSet::setBcs(int bcs) {
-    if (bcs >= 1 && bcs <= 3){
-        this->bcs = bcs;
+void SynSet::setBcs(int _bcs) {
+    if (_bcs >= 1 && _bcs <= 3){
+        this->bcs = _bcs;
     }
 }
 
@@ -251,17 +251,17 @@ void SynSet::setBcs(int bcs) {
  *
  * @return bcs value
  */
-int SynSet::getBcs() {
+int SynSet::getBcs() const{
     return bcs;
 }
 
 /**
  * Mutator for the part of speech tags.
  *
- * @param pos part of speech tag
+ * @param _pos part of speech tag
  */
-void SynSet::setPos(Pos pos) {
-    this->pos = pos;
+void SynSet::setPos(Pos _pos) {
+    this->pos = _pos;
 }
 
 /**
@@ -269,17 +269,17 @@ void SynSet::setPos(Pos pos) {
  *
  * @return part of speech tag
  */
-Pos SynSet::getPos() {
+Pos SynSet::getPos() const{
     return pos;
 }
 
 /**
  * Mutator for the available notes.
  *
- * @param note String note to be set
+ * @param _note String _note to be set
  */
-void SynSet::setNote(string note) {
-    this->note = move(note);
+void SynSet::setNote(const string& _note) {
+    this->note = _note;
 }
 
 /**
@@ -287,7 +287,7 @@ void SynSet::setNote(string note) {
  *
  * @return String note
  */
-string SynSet::getNote() {
+string SynSet::getNote() const{
     return note;
 }
 
@@ -296,8 +296,8 @@ string SynSet::getNote() {
  *
  * @param note String Wiki page to be set
  */
-void SynSet::setWikiPage(string wikiPage) {
-    this->wikiPage = move(wikiPage);
+void SynSet::setWikiPage(const string& _wikiPage) {
+    this->wikiPage = _wikiPage;
 }
 
 /**
@@ -305,7 +305,7 @@ void SynSet::setWikiPage(string wikiPage) {
  *
  * @return String wiki page
  */
-string SynSet::getWikiPage() {
+string SynSet::getWikiPage() const{
     return wikiPage;
 }
 
@@ -339,7 +339,7 @@ void SynSet::removeRelation(Relation *relation) {
  *
  * @param name element to be removed from the list, if present
  */
-void SynSet::removeRelation(string name) {
+void SynSet::removeRelation(const string& name) {
     for (auto it = relations.begin() ; it != relations.end(); ++it){
         if ((*it)->getName() == name){
             relations.erase(it);
@@ -354,7 +354,7 @@ void SynSet::removeRelation(string name) {
  * @param index index of the element to return
  * @return the element at the specified position in the list
  */
-Relation *SynSet::getRelation(int index) {
+Relation *SynSet::getRelation(int index) const{
     return relations.at(index);
 }
 
@@ -363,7 +363,7 @@ Relation *SynSet::getRelation(int index) {
  *
  * @return a list of SynSets that has interlingual relations in it
  */
-vector<string> SynSet::getInterlingual() {
+vector<string> SynSet::getInterlingual() const{
     vector<string> result;
     for (auto &i : relations) {
         if (auto * semanticRelation = dynamic_cast<InterlingualRelation*>(i)){
@@ -381,7 +381,7 @@ vector<string> SynSet::getInterlingual() {
  *
  * @return the size of the relations list
  */
-int SynSet::relationSize() {
+int SynSet::relationSize() const{
     return relations.size();
 }
 
@@ -390,8 +390,8 @@ int SynSet::relationSize() {
  *
  * @param literal literal to be added
  */
-void SynSet::addLiteral(Literal literal) {
-    synonym.addLiteral(move(literal));
+void SynSet::addLiteral(const Literal& literal) {
+    synonym.addLiteral(literal);
 }
 
 /**
@@ -399,7 +399,7 @@ void SynSet::addLiteral(Literal literal) {
  *
  * @return synonym
  */
-Synonym SynSet::getSynonym() {
+Synonym SynSet::getSynonym() const{
     return synonym;
 }
 
@@ -409,7 +409,7 @@ Synonym SynSet::getSynonym() {
  * @param synSet SynSet to compare
  * @return true if SynSets have same literals, false otherwise
  */
-bool SynSet::containsSameLiteral(SynSet synSet) {
+bool SynSet::containsSameLiteral(const SynSet& synSet) const{
     for (int i = 0; i < synonym.literalSize(); i++){
         string literal1 = synonym.getLiteral(i).getName();
         for (int j = 0; j < synSet.getSynonym().literalSize(); j++){
@@ -428,7 +428,7 @@ bool SynSet::containsSameLiteral(SynSet synSet) {
  * @param relation element whose presence in the list is to be tested
  * @return <tt>true</tt> if the list contains the specified element
  */
-bool SynSet::containsRelation(Relation *relation) {
+bool SynSet::containsRelation(Relation *relation) const{
     for (Relation* r : relations) {
         if (*r == *relation){
             return true;
@@ -443,7 +443,7 @@ bool SynSet::containsRelation(Relation *relation) {
  * @param semanticRelationType element whose presence in the list is to be tested
  * @return <<tt>true</tt> if specified semantic relation type presents in the relations list
  */
-bool SynSet::containsRelationType(SemanticRelationType semanticRelationType) {
+bool SynSet::containsRelationType(SemanticRelationType semanticRelationType) const{
     for (Relation* relation : relations) {
         if (auto * semanticRelation = dynamic_cast<SemanticRelation*>(relation)){
             if (semanticRelation->getRelationType() == semanticRelationType){
@@ -459,7 +459,7 @@ bool SynSet::containsRelationType(SemanticRelationType semanticRelationType) {
  *
  * @param synSet SynSet to be merged
  */
-void SynSet::mergeSynSet(SynSet synSet) {
+void SynSet::mergeSynSet(const SynSet& synSet) {
     for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
         if (!synonym.contains(synSet.getSynonym().getLiteral(i))){
             synonym.addLiteral(synSet.getSynonym().getLiteral(i));
@@ -489,7 +489,7 @@ void SynSet::mergeSynSet(SynSet synSet) {
  *
  * @return print the first definition or representative.
  */
-string SynSet::to_string() {
+string SynSet::to_string() const{
     if (!definition.empty()){
         return definition[0];
     } else {

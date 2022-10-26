@@ -15,12 +15,12 @@ public:
     static const int INTERLINGUAL_DEPENDENCY_SIZE = 14;
     static const string ilrDependency[INTERLINGUAL_DEPENDENCY_SIZE];
     static const InterlingualDependencyType interlinguaDependencyTags[INTERLINGUAL_DEPENDENCY_SIZE];
-    static InterlingualDependencyType getInterlinguaDependencyTag(string tag);
-    InterlingualRelation(string name, string dependencyType);
-    InterlingualDependencyType getType();
-    string getTypeAsString() override;
-    string to_string();
-    string to_xml() override;
+    static InterlingualDependencyType getInterlinguaDependencyTag(const string& tag);
+    InterlingualRelation(const string& name, const string& dependencyType);
+    InterlingualDependencyType getType() const;
+    string getTypeAsString() const override;
+    string to_string() const;
+    string to_xml() const override;
 };
 
 

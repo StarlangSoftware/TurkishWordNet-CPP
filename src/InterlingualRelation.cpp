@@ -19,7 +19,7 @@ const InterlingualDependencyType InterlingualRelation::interlinguaDependencyTags
  * @param tag String to compare
  * @return interlingual dependency type according to specified tag
  */
-InterlingualDependencyType InterlingualRelation::getInterlinguaDependencyTag(string tag) {
+InterlingualDependencyType InterlingualRelation::getInterlinguaDependencyTag(const string& tag) {
     for (int j = 0; j < INTERLINGUAL_DEPENDENCY_SIZE; j++) {
         if (tag == InterlingualRelation::ilrDependency[j]) {
             return InterlingualRelation::interlinguaDependencyTags[j];
@@ -34,8 +34,8 @@ InterlingualDependencyType InterlingualRelation::getInterlinguaDependencyTag(str
  * @param name           relation name
  * @param dependencyType interlingual dependency type
  */
-InterlingualRelation::InterlingualRelation(string name, string dependencyType) : Relation(move(name)){
-    this->dependencyType = getInterlinguaDependencyTag(move(dependencyType));
+InterlingualRelation::InterlingualRelation(const string& name, const string& dependencyType) : Relation(name){
+    this->dependencyType = getInterlinguaDependencyTag(dependencyType);
 }
 
 /**
@@ -43,7 +43,7 @@ InterlingualRelation::InterlingualRelation(string name, string dependencyType) :
  *
  * @return interlingual dependency type
  */
-InterlingualDependencyType InterlingualRelation::getType(){
+InterlingualDependencyType InterlingualRelation::getType() const{
     return dependencyType;
 }
 
@@ -52,7 +52,7 @@ InterlingualDependencyType InterlingualRelation::getType(){
  *
  * @return String interlingual dependency type
  */
-string InterlingualRelation::getTypeAsString(){
+string InterlingualRelation::getTypeAsString() const{
     return InterlingualRelation::ilrDependency[static_cast<int>(dependencyType)];
 }
 
@@ -61,10 +61,10 @@ string InterlingualRelation::getTypeAsString(){
  *
  * @return String of relation name
  */
-string InterlingualRelation::to_string(){
+string InterlingualRelation::to_string() const{
     return getTypeAsString() + "->" + name;
 }
 
-string InterlingualRelation::to_xml(){
+string InterlingualRelation::to_xml() const{
     return "<ILR>" + name + "<TYPE>" + getTypeAsString() + "</TYPE></ILR>";
 }

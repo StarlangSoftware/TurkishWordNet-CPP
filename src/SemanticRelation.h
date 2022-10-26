@@ -14,19 +14,19 @@ private:
     SemanticRelationType relationType;
     int toIndex;
 public:
-    SemanticRelation(string name, string relationType, int toIndex = 0);
-    SemanticRelation(string name, SemanticRelationType relationType, int toIndex = 0);
+    SemanticRelation(const string& name, const string& relationType, int toIndex = 0);
+    SemanticRelation(const string& name, SemanticRelationType relationType, int toIndex = 0);
     static const int SEMANTIC_DEPENDENCY_SIZE = 25;
     static const string semanticDependency[SEMANTIC_DEPENDENCY_SIZE];
     static const SemanticRelationType semanticDependencyTags[SEMANTIC_DEPENDENCY_SIZE];
-    static SemanticRelationType getSemanticTag(string tag);
+    static SemanticRelationType getSemanticTag(const string& tag);
     static SemanticRelationType reverse(SemanticRelationType semanticRelationType);
-    int getToIndex();
-    SemanticRelationType getRelationType();
+    int getToIndex() const;
+    SemanticRelationType getRelationType() const;
     void setRelationType(SemanticRelationType relationType);
-    string getTypeAsString() override;
-    string to_string();
-    string to_xml() override;
+    string getTypeAsString() const override;
+    string to_string() const;
+    string to_xml() const override;
 };
 
 

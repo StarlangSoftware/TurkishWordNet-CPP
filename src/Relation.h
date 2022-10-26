@@ -13,11 +13,11 @@ class Relation {
 protected:
     string name;
 public:
-    explicit Relation(string name);
-    string getName();
-    void setName(string name);
-    virtual string getTypeAsString() = 0;
-    virtual string to_xml() = 0;
+    explicit Relation(const string& name);
+    string getName() const;
+    void setName(const string& name);
+    virtual string getTypeAsString() const = 0;
+    virtual string to_xml() const = 0;
     bool operator==(const Relation &anotherRelation) const{
         return (name == anotherRelation.name);
     }
