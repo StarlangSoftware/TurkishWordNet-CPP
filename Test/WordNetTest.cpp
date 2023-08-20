@@ -15,11 +15,11 @@ TEST_CASE("WordNetTest"){
         for (const SynSet& synSet : turkish.getSynSetList()){
             literalCount += synSet.getSynonym().literalSize();
         }
-        REQUIRE(110236 == literalCount);
+        REQUIRE(110258 == literalCount);
     }
 
     SECTION("WordNetTest-testLiteralList") {
-        REQUIRE(82255 == turkish.getLiteralList().size());
+        REQUIRE(82275 == turkish.getLiteralList().size());
     }
 
     SECTION("WordNetTest-testGetSynSetWithId") {
@@ -85,7 +85,7 @@ TEST_CASE("WordNetTest"){
     }
 
     SECTION("WordNetTest-testGetSynSetsWithPartOfSpeech") {
-        REQUIRE(43869 == turkish.getSynSetsWithPartOfSpeech(Pos::NOUN).size());
+        REQUIRE(43884 == turkish.getSynSetsWithPartOfSpeech(Pos::NOUN).size());
         REQUIRE(17772 == turkish.getSynSetsWithPartOfSpeech(Pos::VERB).size());
         REQUIRE(12410 == turkish.getSynSetsWithPartOfSpeech(Pos::ADJECTIVE).size());
         REQUIRE(2549 == turkish.getSynSetsWithPartOfSpeech(Pos::ADVERB).size());
@@ -109,7 +109,19 @@ TEST_CASE("WordNetTest"){
     }
 
     SECTION("WordNetTest-testSize") {
-        REQUIRE(78311 == turkish.size());
+        REQUIRE(78326 == turkish.size());
+    }
+
+    SECTION("WordNetTest-testTotalForeignLiterals") {
+        int count = 0;
+        for (const SynSet& synSet : turkish.getSynSetList()){
+            for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
+                if (!synSet.getSynonym().getLiteral(i).getOrigin().empty()){
+                    count++;
+                }
+            }
+        }
+        REQUIRE(3981 == count);
     }
 
     SECTION("WordNetTest-testFindPathToRoot") {

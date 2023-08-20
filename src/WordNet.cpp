@@ -98,14 +98,18 @@ void WordNet::readWordNet(const string& fileName) {
                                                             currentLiteral = Literal(literalNode->getPcData(), stoi(senseNode->getPcData()), currentSynSet->second.getId());
                                                             srNode = senseNode->getNextSibling();
                                                             while (srNode != nullptr) {
-                                                                if (srNode->getName() == "SR") {
-                                                                    typeNode = srNode->getFirstChild();
-                                                                    if (typeNode != nullptr && typeNode->getName() == "TYPE") {
-                                                                        toNode = typeNode->getNextSibling();
-                                                                        if (toNode != nullptr && toNode->getName() == "TO") {
-                                                                            currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData(), stoi(toNode->getPcData())));
-                                                                        } else {
-                                                                            currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
+                                                                if (srNode->getName() == "ORIGIN"){
+                                                                    currentLiteral.setOrigin(srNode->getPcData());
+                                                                } else {
+                                                                    if (srNode->getName() == "SR") {
+                                                                        typeNode = srNode->getFirstChild();
+                                                                        if (typeNode != nullptr && typeNode->getName() == "TYPE") {
+                                                                            toNode = typeNode->getNextSibling();
+                                                                            if (toNode != nullptr && toNode->getName() == "TO") {
+                                                                                currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData(), stoi(toNode->getPcData())));
+                                                                            } else {
+                                                                                currentLiteral.addRelation(new SemanticRelation(srNode->getPcData(), typeNode->getPcData()));
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
