@@ -117,3 +117,26 @@ string Synonym::to_string() const{
     }
     return result;
 }
+
+vector<Synonym> Synonym::getUniqueLiterals() {
+    vector<Synonym> literalGroups;
+    int groupNo = -1;
+    Synonym synonym = Synonym();
+    for (const Literal& literal : literals){
+        if (literal.getGroupNo() != groupNo){
+            if (groupNo != -1){
+                literalGroups.emplace_back(synonym);
+            }
+            groupNo = literal.getGroupNo();
+            synonym = Synonym();
+        } else {
+            if (groupNo == 0){
+                literalGroups.emplace_back(synonym);
+                synonym = Synonym();
+            }
+        }
+        synonym.addLiteral(literal);
+    }
+    literalGroups.emplace_back(synonym);
+    return literalGroups;
+}

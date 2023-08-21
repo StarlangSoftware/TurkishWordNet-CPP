@@ -194,3 +194,11 @@ void Literal::saveAsXml(ofstream& outfile){
     }
     outfile << "</LITERAL>";
 }
+
+int Literal::getGroupNo() const {
+    return groupNo;
+}
+
+void Literal::setGroupNo(int _groupNo) {
+    this->groupNo = _groupNo;
+}

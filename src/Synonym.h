@@ -22,6 +22,7 @@ public:
     void removeLiteral(const Literal& toBeRemoved);
     void saveAsXml(ofstream& outfile);
     string to_string() const;
+    vector<Synonym> getUniqueLiterals();
 };
 
 

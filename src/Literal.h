@@ -15,9 +15,10 @@ using namespace std;
 class Literal {
 protected:
     string name;
-    int sense;
+    int sense = 0;
     string synSetId;
     string origin;
+    int groupNo = 0;
     vector<Relation*> relations;
 public:
     bool operator==(const Literal &anotherLiteral) const{
@@ -29,6 +30,8 @@ public:
     string getName() const;
     int getSense() const;
     string getOrigin() const;
+    int getGroupNo() const;
+    void setGroupNo(int groupNo);
     void setOrigin(const string& origin);
     void setSense(int sense);
     void addRelation(Relation* relation);

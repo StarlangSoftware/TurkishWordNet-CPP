@@ -6,6 +6,7 @@
 
 #include "catch.hpp"
 #include "../src/WordNet.h"
+#include "CounterHashMap.h"
 
 TEST_CASE("WordNetTest"){
     static WordNet turkish = WordNet();
@@ -122,6 +123,34 @@ TEST_CASE("WordNetTest"){
             }
         }
         REQUIRE(3981 == count);
+    }
+
+    SECTION("WordNetTest-testTotalGroupedLiterals") {
+        int count = 0;
+        for (const SynSet& synSet : turkish.getSynSetList()){
+            for (int i = 0; i < synSet.getSynonym().literalSize(); i++){
+                if (synSet.getSynonym().getLiteral(i).getGroupNo() != 0){
+                    count++;
+                }
+            }
+        }
+        REQUIRE(5973 == count);
+    }
+
+    SECTION("WordNetTest-testGroupSize") {
+        CounterHashMap<int> groups = CounterHashMap<int>();
+        for (const SynSet& synSet : turkish.getSynSetList()){
+            vector<Synonym> literalGroups = synSet.getSynonym().getUniqueLiterals();
+            for (const Synonym& synonym : literalGroups){
+                if (synonym.getLiteral(0).getGroupNo() != 0){
+                    groups.put(synonym.literalSize());
+                }
+            }
+        }
+        REQUIRE(0 == groups.count(1));
+        REQUIRE(2949 == groups.count(2));
+        REQUIRE(21 == groups.count(3));
+        REQUIRE(3 == groups.count(4));
     }
 
     SECTION("WordNetTest-testFindPathToRoot") {
