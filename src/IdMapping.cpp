@@ -8,7 +8,7 @@
 #include "IdMapping.h"
 
 /**
- * Constructor to load ID mappings from specific file "mapping.txt" to a {@link HashMap}.
+ * Constructor to load ID mappings from specific file "mapping.txt" to a HashMap.
  */
 IdMapping::IdMapping() {
     ifstream inputFile;
@@ -25,7 +25,7 @@ IdMapping::IdMapping() {
 }
 
 /**
- * Constructor to load ID mappings from given file to a {@link HashMap}.
+ * Constructor to load ID mappings from given file to a HashMap.
  *
  * @param fileName String file name input that will be read
  */
@@ -44,7 +44,7 @@ IdMapping::IdMapping(const string& fileName) {
 }
 
 /**
- * Returns a {@link Set} view of the keys contained in this map.
+ * Returns a Set view of the keys contained in this map.
  *
  * @return a set view of the keys contained in this map
  */
