@@ -195,10 +195,20 @@ void Literal::saveAsXml(ofstream& outfile){
     outfile << "</LITERAL>";
 }
 
+/**
+ * Accessor method to return the group number of the literal. If a literal has a group number larger than 0, it
+ * means the literal has at least one sibling literal in the same synset, whose transcription is very similar to this
+ * literal. For example; 'ab' and 'âb', 'sığır tenyası' and 'sığırtenyası' have the same group numbers.
+ * @return Group number of the literal
+ */
 int Literal::getGroupNo() const {
     return groupNo;
 }
 
+/**
+ * Mutator method for the group number of the literal.
+ * @param groupNo New group number of the literal.
+ */
 void Literal::setGroupNo(int _groupNo) {
     this->groupNo = _groupNo;
 }

@@ -65,6 +65,10 @@ string InterlingualRelation::to_string() const{
     return getTypeAsString() + "->" + name;
 }
 
+/**
+ * Exports the interlingual relation as an xml string.
+ * @return Interlingual relation as an xml string.
+ */
 string InterlingualRelation::to_xml() const{
     return "<ILR>" + name + "<TYPE>" + getTypeAsString() + "</TYPE></ILR>";
 }

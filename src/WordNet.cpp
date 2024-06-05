@@ -10,8 +10,13 @@
 #include "InterlingualRelation.h"
 
 /**
- * ReadWordNetTask class extends SwingWorker class which is an abstract class to perform lengthy
- * GUI-interaction tasks in a background thread.
+ * Reads a wordnet from a Xml file. A wordnet consists of a list of synsets encapsulated inside SYNSET tag. A synset
+ * has an id (represented with ID tag), a set of literals encapsulated inside SYNONYM tag, part of speech tag
+ * (represented with POS tag), a set of semantic relations encapsulated inside SR tag, a definition (represented
+ * with DEF tag), and a possible example (represented with EXAMPLE tag). Each literal has a name, possibly a group
+ * number (represented with GROUP tag), a sense number (represented with SENSE tag) and a set of semantic relations
+ * encapsulated inside SR tag. A semantic relation has a name and a type (represented with TYPE tag).
+ * @param inputStream File stream that contains the wordnet.
  */
 void WordNet::readWordNet(const string& fileName) {
     XmlElement *rootNode, *synSetNode, *partNode, *srNode, *typeNode, *toNode, *literalNode, *senseNode;

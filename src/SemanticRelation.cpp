@@ -149,6 +149,10 @@ string SemanticRelation::to_string() const{
     return getTypeAsString() + "->" + name;
 }
 
+/**
+ * Exports the semantic relation as an xml string.
+ * @return Semantic relation as an xml string.
+ */
 string SemanticRelation::to_xml() const{
     if (toIndex == 0){
         return "<SR>" + name + "<TYPE>" + getTypeAsString() + "</TYPE></SR>";
