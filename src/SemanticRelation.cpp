@@ -23,6 +23,7 @@ const SemanticRelationType SemanticRelation::semanticDependencyTags[SEMANTIC_DEP
  *
  * @param name         name of the relation
  * @param relationType String semantic dependency tag
+ * @param toIndex      index of the relation
  */
 SemanticRelation::SemanticRelation(const string& name, const string& relationType, int toIndex) : Relation(name){
     this->relationType = getSemanticTag(relationType);

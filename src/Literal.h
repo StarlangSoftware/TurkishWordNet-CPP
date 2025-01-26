@@ -43,7 +43,7 @@ public:
     void setName(const string& name);
     void setSynSetId(const string& synSetId);
     string to_string() const;
-    void saveAsXml(ofstream& outfile);
+    void saveAsXml(ofstream& outfile) const;
 };
 
 

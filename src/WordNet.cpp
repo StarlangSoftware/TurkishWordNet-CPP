@@ -3,8 +3,8 @@
 //
 
 #include <iostream>
-#include <utility>
 #include "WordNet.h"
+#include <StringUtils.h>
 #include "XmlDocument.h"
 #include "SemanticRelation.h"
 #include "InterlingualRelation.h"
@@ -16,7 +16,7 @@
  * with DEF tag), and a possible example (represented with EXAMPLE tag). Each literal has a name, possibly a group
  * number (represented with GROUP tag), a sense number (represented with SENSE tag) and a set of semantic relations
  * encapsulated inside SR tag. A semantic relation has a name and a type (represented with TYPE tag).
- * @param inputStream File stream that contains the wordnet.
+ * @param fileName File stream that contains the wordnet.
  */
 void WordNet::readWordNet(const string& fileName) {
     XmlElement *rootNode, *synSetNode, *partNode, *srNode, *typeNode, *toNode, *literalNode, *senseNode;
@@ -251,7 +251,7 @@ void WordNet::mergeSynSets(const string& synSetFile) {
     inputFile.open(synSetFile, ifstream :: in);
     while (inputFile.good()) {
         getline(inputFile, line);
-        vector<string> synSetIds = Word::split(line);
+        vector<string> synSetIds = StringUtils::split(line);
         SynSet* mergedOne = getSynSetWithId(synSetIds[0]);
         if (mergedOne != nullptr){
             for (int i = 1; i < synSetIds.size(); i++){
@@ -273,6 +273,7 @@ void WordNet::mergeSynSets(const string& synSetFile) {
  */
 vector<SynSet> WordNet::getSynSetList() const{
     vector<SynSet> result;
+    result.reserve(synSetList.size());
     for (auto& iterator : synSetList){
         result.emplace_back(iterator.second);
     }
@@ -286,6 +287,7 @@ vector<SynSet> WordNet::getSynSetList() const{
  */
 vector<string> WordNet::getLiteralList() const{
     vector<string> result;
+    result.reserve(literalList.size());
     for (auto& iterator : literalList){
         result.emplace_back(iterator.first);
     }
@@ -304,7 +306,7 @@ map<string, SynSet>::iterator WordNet::addSynSet(const SynSet& synSet) {
 /**
  * Removes specified SynSet from the SynSet list.
  *
- * @param synSet SynSet to be added
+ * @param s SynSet to be added
  */
 void WordNet::removeSynSet(const SynSet& s) {
     synSetList.erase(s.getId());
@@ -435,43 +437,43 @@ vector<string> WordNet::getLiteralsWithPossibleModifiedLiteral(const string& lit
     if (exceptionList.contains(literal) && literalList.contains(exceptionList.find(literal)->second.getRoot())){
         result.emplace_back(exceptionList.find(literal)->second.getRoot());
     }
-    if (Word::endsWith(literal, "s") && literalList.find(literal.substr(0, literal.length() - 1)) != literalList.end()){
+    if (StringUtils::endsWith(literal, "s") && literalList.contains(literal.substr(0, literal.length() - 1))){
         result.emplace_back(literal.substr(0, literal.length() - 1));
     }
-    if (Word::endsWith(literal, "es") && literalList.find(literal.substr(0, literal.length() - 2)) != literalList.end()){
+    if (StringUtils::endsWith(literal, "es") && literalList.contains(literal.substr(0, literal.length() - 2))){
         result.emplace_back(literal.substr(0, literal.length() - 2));
     }
-    if (Word::endsWith(literal, "ed") && literalList.find(literal.substr(0, literal.length() - 2)) != literalList.end()){
+    if (StringUtils::endsWith(literal, "ed") && literalList.contains(literal.substr(0, literal.length() - 2))){
         result.emplace_back(literal.substr(0, literal.length() - 2));
     }
-    if (Word::endsWith(literal, "ed") && literalList.find(literal.substr(0, literal.length() - 2) + literal[literal.length() - 3]) != literalList.end()){
+    if (StringUtils::endsWith(literal, "ed") && literalList.contains(literal.substr(0, literal.length() - 2) + literal[literal.length() - 3])){
         result.emplace_back(literal.substr(0, literal.length() - 2) + literal[literal.length() - 3]);
     }
-    if (Word::endsWith(literal, "ed") && literalList.find(literal.substr(0, literal.length() - 2) + "e") != literalList.end()){
+    if (StringUtils::endsWith(literal, "ed") && literalList.contains(literal.substr(0, literal.length() - 2) + "e")){
         result.emplace_back(literal.substr(0, literal.length() - 2) + "e");
     }
-    if (Word::endsWith(literal, "er") && literalList.find(literal.substr(0, literal.length() - 2)) != literalList.end()){
+    if (StringUtils::endsWith(literal, "er") && literalList.contains(literal.substr(0, literal.length() - 2))){
         result.emplace_back(literal.substr(0, literal.length() - 2));
     }
-    if (Word::endsWith(literal, "er") && literalList.find(literal.substr(0, literal.length() - 2) + "e") != literalList.end()){
+    if (StringUtils::endsWith(literal, "er") && literalList.contains(literal.substr(0, literal.length() - 2) + "e")){
         result.emplace_back(literal.substr(0, literal.length() - 2) + "e");
     }
-    if (Word::endsWith(literal, "ing") && literalList.find(literal.substr(0, literal.length() - 3)) != literalList.end()){
+    if (StringUtils::endsWith(literal, "ing") && literalList.contains(literal.substr(0, literal.length() - 3))){
         result.emplace_back(literal.substr(0, literal.length() - 3));
     }
-    if (Word::endsWith(literal, "ing") && literalList.find(literal.substr(0, literal.length() - 3) + literal[literal.length() - 4]) != literalList.end()){
+    if (StringUtils::endsWith(literal, "ing") && literalList.contains(literal.substr(0, literal.length() - 3) + literal[literal.length() - 4])){
         result.emplace_back(literal.substr(0, literal.length() - 3) + literal[literal.length() - 4]);
     }
-    if (Word::endsWith(literal, "ing") && literalList.find(literal.substr(0, literal.length() - 3) + "e") != literalList.end()){
+    if (StringUtils::endsWith(literal, "ing") && literalList.contains(literal.substr(0, literal.length() - 3) + "e")){
         result.emplace_back(literal.substr(0, literal.length() - 3) + "e");
     }
-    if (Word::endsWith(literal, "ies") && literalList.find(literal.substr(0, literal.length() - 3) + "y") != literalList.end()){
+    if (StringUtils::endsWith(literal, "ies") && literalList.contains(literal.substr(0, literal.length() - 3) + "y")){
         result.emplace_back(literal.substr(0, literal.length() - 3) + "y");
     }
-    if (Word::endsWith(literal, "est") && literalList.find(literal.substr(0, literal.length() - 3)) != literalList.end()){
+    if (StringUtils::endsWith(literal, "est") && literalList.contains(literal.substr(0, literal.length() - 3))){
         result.emplace_back(literal.substr(0, literal.length() - 3));
     }
-    if (Word::endsWith(literal, "est") && literalList.find(literal.substr(0, literal.length() - 3) + "e") != literalList.end()){
+    if (StringUtils::endsWith(literal, "est") && literalList.contains(literal.substr(0, literal.length() - 3) + "e")){
         result.emplace_back(literal.substr(0, literal.length() - 3) + "e");
     }
     return result;
@@ -550,7 +552,7 @@ void WordNet::equalizeSemanticRelations() {
  * @return a list of literal
  */
 vector<Literal> WordNet::constructLiterals(const string& word, const MorphologicalParse& parse, const MetamorphicParse& metaParse,
-                                           FsmMorphologicalAnalyzer fsm) const{
+                                           const FsmMorphologicalAnalyzer &fsm) const{
     vector<Literal> result;
     if (parse.size() > 0){
         if (!parse.isPunctuation() && !parse.isCardinal() && !parse.isReal()){
@@ -580,7 +582,7 @@ vector<Literal> WordNet::constructLiterals(const string& word, const Morphologic
  * @return a list of SynSets
  */
 vector<SynSet> WordNet::constructSynSets(const string& word, const MorphologicalParse& parse, const MetamorphicParse& metaParse,
-                                         FsmMorphologicalAnalyzer fsm){
+                                         const FsmMorphologicalAnalyzer &fsm){
     vector<SynSet> result;
     if (parse.size() > 0){
         if (parse.isProperNoun()){
@@ -693,7 +695,7 @@ vector<Literal>
 WordNet::constructIdiomLiterals(const MorphologicalParse& morphologicalParse1, const MorphologicalParse& morphologicalParse2,
                                 const MorphologicalParse& morphologicalParse3, const MetamorphicParse& metaParse1,
                                 const MetamorphicParse& metaParse2, const MetamorphicParse& metaParse3,
-                                FsmMorphologicalAnalyzer fsm) const{
+                                const FsmMorphologicalAnalyzer &fsm) const{
     vector<Literal> result;
     unordered_set<string> possibleWords1 = fsm.getPossibleWords(morphologicalParse1, metaParse1);
     unordered_set<string> possibleWords2 = fsm.getPossibleWords(morphologicalParse2, metaParse2);
@@ -726,7 +728,7 @@ WordNet::constructIdiomLiterals(const MorphologicalParse& morphologicalParse1, c
 vector<SynSet>
 WordNet::constructIdiomSynSets(const MorphologicalParse& morphologicalParse1, const MorphologicalParse& morphologicalParse2,
                                const MorphologicalParse& morphologicalParse3, const MetamorphicParse& metaParse1,
-                               const MetamorphicParse& metaParse2, const MetamorphicParse& metaParse3, FsmMorphologicalAnalyzer fsm){
+                               const MetamorphicParse& metaParse2, const MetamorphicParse& metaParse3, const FsmMorphologicalAnalyzer &fsm){
     vector<SynSet> result;
     unordered_set<string> possibleWords1 = fsm.getPossibleWords(morphologicalParse1, metaParse1);
     unordered_set<string> possibleWords2 = fsm.getPossibleWords(morphologicalParse2, metaParse2);
@@ -759,7 +761,7 @@ WordNet::constructIdiomSynSets(const MorphologicalParse& morphologicalParse1, co
 vector<Literal>
 WordNet::constructIdiomLiterals(const MorphologicalParse& morphologicalParse1, const MorphologicalParse& morphologicalParse2,
                                 const MetamorphicParse& metaParse1, const MetamorphicParse& metaParse2,
-                                FsmMorphologicalAnalyzer fsm) const{
+                                const FsmMorphologicalAnalyzer &fsm) const{
     vector<Literal> result;
     unordered_set<string> possibleWords1 = fsm.getPossibleWords(morphologicalParse1, metaParse1);
     unordered_set<string> possibleWords2 = fsm.getPossibleWords(morphologicalParse2, metaParse2);
@@ -786,7 +788,7 @@ WordNet::constructIdiomLiterals(const MorphologicalParse& morphologicalParse1, c
  */
 vector<SynSet>
 WordNet::constructIdiomSynSets(const MorphologicalParse& morphologicalParse1, const MorphologicalParse& morphologicalParse2,
-                               const MetamorphicParse& metaParse1, const MetamorphicParse& metaParse2, FsmMorphologicalAnalyzer fsm){
+                               const MetamorphicParse& metaParse1, const MetamorphicParse& metaParse2, const FsmMorphologicalAnalyzer &fsm){
     vector<SynSet> result;
     unordered_set<string> possibleWords1 = fsm.getPossibleWords(morphologicalParse1, metaParse1);
     unordered_set<string> possibleWords2 = fsm.getPossibleWords(morphologicalParse2, metaParse2);
@@ -806,7 +808,7 @@ WordNet::constructIdiomSynSets(const MorphologicalParse& morphologicalParse1, co
 /**
  * Sorts definitions of SynSets in SynSet list according to their lengths.
  */
-void WordNet::sortDefinitions() {
+void WordNet::sortDefinitions() const {
     for (SynSet synSet: getSynSetList()){
         synSet.sortDefinitions();
     }
@@ -831,7 +833,7 @@ vector<SynSet> WordNet::getInterlingual(const string& synSetId) const{
  *
  * @param secondWordNet WordNet in other language to find relations
  */
-void WordNet::multipleInterlingualRelationCheck1(WordNet secondWordNet) {
+void WordNet::multipleInterlingualRelationCheck1(WordNet secondWordNet) const {
     for (const SynSet& synSet : getSynSetList()){
         vector<string> interlingual = synSet.getInterlingual();
         if (interlingual.size() > 1){
@@ -850,7 +852,7 @@ void WordNet::multipleInterlingualRelationCheck1(WordNet secondWordNet) {
  *
  * @param secondWordNet WordNet in other language to find relations
  */
-void WordNet::multipleInterlingualRelationCheck2(WordNet secondWordNet) {
+void WordNet::multipleInterlingualRelationCheck2(WordNet secondWordNet) const {
     for (auto& iterator : interlingualList){
         string s = iterator.first;
         if (interlingualList.find(s)->second.size() > 1){
@@ -1133,7 +1135,7 @@ SynSet* WordNet::percolateUp(SynSet* root){
 /**
  * Changes ID of a specified SynSet with the specified new ID.
  *
- * @param synSet SynSet whose ID will be updated
+ * @param s SynSet whose ID will be updated
  * @param newId  new ID
  */
 void WordNet::changeSynSetId(SynSet s, const string& newId) {

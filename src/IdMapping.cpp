@@ -7,6 +7,8 @@
 #include <vector>
 #include "IdMapping.h"
 
+#include <StringUtils.h>
+
 /**
  * Constructor to load ID mappings from specific file "mapping.txt" to a HashMap.
  */
@@ -16,7 +18,7 @@ IdMapping::IdMapping() {
     inputFile.open("mapping.txt", ifstream :: in);
     while (inputFile.good()) {
         getline(inputFile, s);
-        vector<string> tokens = Word::split(s, "->");
+        vector<string> tokens = StringUtils::split(s, "->");
         if (!tokens.empty()) {
             map.emplace(tokens.at(0), tokens.at(1));
         }
@@ -35,7 +37,7 @@ IdMapping::IdMapping(const string& fileName) {
     inputFile.open(fileName, ifstream :: in);
     while (inputFile.good()) {
         getline(inputFile, s);
-        vector<string> tokens = Word::split(s, "->");
+        vector<string> tokens = StringUtils::split(s, "->");
         if (!tokens.empty()) {
             map.emplace(tokens.at(0), tokens.at(1));
         }
@@ -50,6 +52,7 @@ IdMapping::IdMapping(const string& fileName) {
  */
 vector<string> IdMapping::keySet() const{
     vector<string> keySet;
+    keySet.reserve(map.size());
     for (auto &it : map) {
         keySet.emplace_back(it.first);
     }
@@ -108,7 +111,7 @@ void IdMapping::remove(const string& key) {
  *
  * @param fileName String file to write map
  */
-void IdMapping::save(const string& fileName) {
+void IdMapping::save(const string& fileName) const {
     ofstream outputFile;
     outputFile.open(fileName, ofstream :: out);
     for (auto &it : map) {

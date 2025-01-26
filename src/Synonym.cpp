@@ -97,9 +97,9 @@ void Synonym::removeLiteral(const Literal& toBeRemoved) {
  *
  * @param outfile BufferedWriter to write XML files
  */
-void Synonym::saveAsXml(ofstream& outfile) {
+void Synonym::saveAsXml(ofstream& outfile) const {
     outfile << "<SYNONYM>";
-    for (Literal literal:literals){
+    for (const Literal& literal:literals){
         literal.saveAsXml(outfile);
     }
     outfile << "</SYNONYM>";
@@ -125,7 +125,7 @@ string Synonym::to_string() const{
  * in one synonym and 'su' is in another synonym.
  * @return Vector of literal groups represented as synonyms
  */
-vector<Synonym> Synonym::getUniqueLiterals() {
+vector<Synonym> Synonym::getUniqueLiterals() const {
     vector<Synonym> literalGroups;
     int groupNo = -1;
     Synonym synonym = Synonym();

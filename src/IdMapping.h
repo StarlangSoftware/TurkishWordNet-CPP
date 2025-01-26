@@ -20,7 +20,7 @@ public:
     string singleMap(const string& id) const;
     void add(const string& key, const string& value);
     void remove(const string& key);
-    void save(const string& fileName);
+    void save(const string& fileName) const;
 };
 
 

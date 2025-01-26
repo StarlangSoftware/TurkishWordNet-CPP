@@ -8,7 +8,12 @@ from conan.tools.files import copy
 class WordNetConan(ConanFile):
     name = "word_net"
     version = "1.0.0"
-    requires = ["morphological_analysis/1.0.0", "dictionary/1.0.0", "corpus/1.0.0", "data_structure/1.0.0", "xml_parser/1.0.0"]
+    requires = ["morphological_analysis/1.0.0",
+                "dictionary/1.0.0",
+                "corpus/1.0.0",
+                "data_structure/1.0.0",
+                "xml_parser/1.0.0",
+                "util/1.0.0"]
     license = "GPL License"
     author = "Olcay Taner Yildiz olcay.yildiz@ozyegin.edu.tr"
     url = "https://github.com/StarlangSoftware/TurkishWordNet-CPP"

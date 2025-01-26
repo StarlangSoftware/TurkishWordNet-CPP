@@ -116,7 +116,7 @@ bool Literal::containsRelation(Relation *relation) const{
  * Returns <tt>true</tt> if specified semantic relation type presents in the relations list.
  *
  * @param semanticRelationType element whose presence in the list is to be tested
- * @return <<tt>true</tt> if specified semantic relation type presents in the relations list
+ * @return true if specified semantic relation type presents in the relations list
  */
 bool Literal::containsRelationType(SemanticRelationType semanticRelationType) const{
     for (Relation* relation : relations){
@@ -180,7 +180,7 @@ string Literal::to_string() const{
  *
  * @param outfile BufferedWriter to write XML files
  */
-void Literal::saveAsXml(ofstream& outfile){
+void Literal::saveAsXml(ofstream& outfile) const {
     if (name == "&"){
         outfile << "<LITERAL>&amp;<SENSE>" + std::to_string(sense) + "</SENSE>";
     } else {
@@ -207,7 +207,7 @@ int Literal::getGroupNo() const {
 
 /**
  * Mutator method for the group number of the literal.
- * @param groupNo New group number of the literal.
+ * @param _groupNo New group number of the literal.
  */
 void Literal::setGroupNo(int _groupNo) {
     this->groupNo = _groupNo;

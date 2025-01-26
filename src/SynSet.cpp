@@ -3,8 +3,11 @@
 //
 
 #include <fstream>
-#include "Dictionary/Word.h"
+#include "StringUtils.h"
 #include "SynSet.h"
+
+#include <Dictionary/Word.h>
+
 #include "InterlingualRelation.h"
 #include "SemanticRelation.h"
 
@@ -44,7 +47,7 @@ void SynSet::setId(const string& _id) {
  * @param _definition String _definition
  */
 void SynSet::setDefinition(const string& _definition) {
-    this->definition = Word::split(_definition, "|");
+    this->definition = StringUtils::split(_definition, "|");
 }
 
 /**
@@ -54,14 +57,14 @@ void SynSet::setDefinition(const string& _definition) {
  */
 void SynSet::removeDefinition(const string& _definition) {
     string longDefinition = getLongDefinition();
-    if (Word::startsWith(longDefinition, _definition + "|")){
-        setDefinition(Word::replaceAll(longDefinition, _definition + "|", ""));
+    if (StringUtils::startsWith(longDefinition, _definition + "|")){
+        setDefinition(StringUtils::replaceAll(longDefinition, _definition + "|", ""));
     } else {
-        if (Word::endsWith(longDefinition, "|" + _definition)){
-            setDefinition(Word::replaceAll(longDefinition, "|" + _definition, ""));
+        if (StringUtils::endsWith(longDefinition, "|" + _definition)){
+            setDefinition(StringUtils::replaceAll(longDefinition, "|" + _definition, ""));
         } else {
             if (longDefinition.find("|" + _definition + "|") != string::npos){
-                setDefinition(Word::replaceAll(longDefinition, "|" + _definition, ""));
+                setDefinition(StringUtils::replaceAll(longDefinition, "|" + _definition, ""));
             }
         }
     }
@@ -69,8 +72,6 @@ void SynSet::removeDefinition(const string& _definition) {
 
 /**
  * Removes the same definitions from long definition.
- *
- * @param locale Locale of the programme that will be used in converting upper/lower cases
  */
 void SynSet::removeSameDefinitions() {
     string _definition = getLongDefinition();
@@ -82,51 +83,51 @@ void SynSet::removeSameDefinitions() {
             string word = literal.getName();
             string uppercaseWord = Word::substring(literal.getName(), 0, 1) + Word::substring(literal.getName(), 1);
             if (_definition.find("|" + word + "|") != string::npos){
-                _definition = Word::replaceAll(_definition, "|" + word + "|", "|");
+                _definition = StringUtils::replaceAll(_definition, "|" + word + "|", "|");
                 removed = true;
             }
             if (_definition.find("|" + word + "; ") != string::npos){
-                _definition = Word::replaceAll(_definition, "|" + word + "; ", "|");
+                _definition = StringUtils::replaceAll(_definition, "|" + word + "; ", "|");
                 removed = true;
             }
             if (_definition.find("|" + uppercaseWord + "|") != string::npos){
-                _definition = Word::replaceAll(_definition, "|" + uppercaseWord + "|", "|");
+                _definition = StringUtils::replaceAll(_definition, "|" + uppercaseWord + "|", "|");
                 removed = true;
             }
             if (_definition.find("|" + uppercaseWord + "; ") != string::npos){
-                _definition = Word::replaceAll(_definition, "|" + uppercaseWord + "; ", "|");
+                _definition = StringUtils::replaceAll(_definition, "|" + uppercaseWord + "; ", "|");
                 removed = true;
             }
             if (_definition.find("; " + word + "|") != string::npos){
-                _definition = Word::replaceAll(_definition, "; " + word + "|", "|");
+                _definition = StringUtils::replaceAll(_definition, "; " + word + "|", "|");
                 removed = true;
             }
             if (_definition.find("; " + uppercaseWord + "|") != string::npos){
-                _definition = Word::replaceAll(_definition, "; " + uppercaseWord + "|", "|");
+                _definition = StringUtils::replaceAll(_definition, "; " + uppercaseWord + "|", "|");
                 removed = true;
             }
-            if (Word::endsWith(_definition, "; " + word)){
-                _definition = Word::replaceAll(_definition, "; " + word, "");
+            if (StringUtils::endsWith(_definition, "; " + word)){
+                _definition = StringUtils::replaceAll(_definition, "; " + word, "");
                 removed = true;
             }
-            if (Word::endsWith(_definition, "|" + word)){
-                _definition = Word::replaceAll(_definition, "|" + word, "");
+            if (StringUtils::endsWith(_definition, "|" + word)){
+                _definition = StringUtils::replaceAll(_definition, "|" + word, "");
                 removed = true;
             }
-            if (Word::startsWith(_definition, word + "|")){
-                _definition = Word::replaceAll(_definition, word + "|", "");
+            if (StringUtils::startsWith(_definition, word + "|")){
+                _definition = StringUtils::replaceAll(_definition, word + "|", "");
                 removed = true;
             }
-            if (Word::startsWith(_definition, uppercaseWord + "|")){
-                _definition = Word::replaceAll(_definition, uppercaseWord + "|", "");
+            if (StringUtils::startsWith(_definition, uppercaseWord + "|")){
+                _definition = StringUtils::replaceAll(_definition, uppercaseWord + "|", "");
                 removed = true;
             }
-            if (Word::endsWith(_definition, "; " + uppercaseWord)){
-                _definition = Word::replaceAll(_definition, "; " + uppercaseWord, "");
+            if (StringUtils::endsWith(_definition, "; " + uppercaseWord)){
+                _definition = StringUtils::replaceAll(_definition, "; " + uppercaseWord, "");
                 removed = true;
             }
-            if (Word::endsWith(_definition, "|" + uppercaseWord)){
-                _definition = Word::replaceAll(_definition, "|" + uppercaseWord, "");
+            if (StringUtils::endsWith(_definition, "|" + uppercaseWord)){
+                _definition = StringUtils::replaceAll(_definition, "|" + uppercaseWord, "");
                 removed = true;
             }
             if (_definition == word){
@@ -294,7 +295,7 @@ string SynSet::getNote() const{
 /**
  * Mutator for the wiki pages.
  *
- * @param note String Wiki page to be set
+ * @param _wikiPage String Wiki page to be set
  */
 void SynSet::setWikiPage(const string& _wikiPage) {
     this->wikiPage = _wikiPage;
@@ -441,7 +442,7 @@ bool SynSet::containsRelation(Relation *relation) const{
  * Returns <tt>true</tt> if specified semantic relation type presents in the relations list.
  *
  * @param semanticRelationType element whose presence in the list is to be tested
- * @return <<tt>true</tt> if specified semantic relation type presents in the relations list
+ * @return true if specified semantic relation type presents in the relations list
  */
 bool SynSet::containsRelationType(SemanticRelationType semanticRelationType) const{
     for (Relation* relation : relations) {

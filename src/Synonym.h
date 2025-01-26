@@ -20,9 +20,9 @@ public:
     bool contains(const Literal& literal) const;
     bool containsLiteral(const string& literalName) const;
     void removeLiteral(const Literal& toBeRemoved);
-    void saveAsXml(ofstream& outfile);
+    void saveAsXml(ofstream& outfile) const;
     string to_string() const;
-    vector<Synonym> getUniqueLiterals();
+    vector<Synonym> getUniqueLiterals() const;
 };
 
 
