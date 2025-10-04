@@ -20,7 +20,7 @@ IdMapping::IdMapping() {
         getline(inputFile, s);
         vector<string> tokens = StringUtils::split(s, "->");
         if (!tokens.empty()) {
-            map.emplace(tokens.at(0), tokens.at(1));
+            idMap.emplace(tokens.at(0), tokens.at(1));
         }
     }
     inputFile.close();
@@ -39,7 +39,7 @@ IdMapping::IdMapping(const string& fileName) {
         getline(inputFile, s);
         vector<string> tokens = StringUtils::split(s, "->");
         if (!tokens.empty()) {
-            map.emplace(tokens.at(0), tokens.at(1));
+            idMap.emplace(tokens.at(0), tokens.at(1));
         }
     }
     inputFile.close();
@@ -52,8 +52,8 @@ IdMapping::IdMapping(const string& fileName) {
  */
 vector<string> IdMapping::keySet() const{
     vector<string> keySet;
-    keySet.reserve(map.size());
-    for (auto &it : map) {
+    keySet.reserve(idMap.size());
+    for (auto &it : idMap) {
         keySet.emplace_back(it.first);
     }
     return keySet;
@@ -67,12 +67,12 @@ vector<string> IdMapping::keySet() const{
  * @return value of the specified key
  */
 string IdMapping::mapTo(const string& id) const{
-    if (!map.contains(id)){
+    if (!idMap.contains(id)){
         return "";
     }
-    string mappedId = map.find(id)->second;
-    while (map.contains(mappedId)){
-        mappedId = map.find(id)->second;
+    string mappedId = idMap.find(id)->second;
+    while (idMap.contains(mappedId)){
+        mappedId = idMap.find(id)->second;
     }
     return mappedId;
 }
@@ -84,7 +84,7 @@ string IdMapping::mapTo(const string& id) const{
  * @return value of the specified key
  */
 string IdMapping::singleMap(const string& id) const{
-    return map.find(id)->second;
+    return idMap.find(id)->second;
 }
 
 /**
@@ -94,7 +94,7 @@ string IdMapping::singleMap(const string& id) const{
  * @param value value to be associated with the specified key
  */
 void IdMapping::add(const string& key, const string& value) {
-    map.emplace(key, value);
+    idMap.emplace(key, value);
 }
 
 /**
@@ -103,7 +103,7 @@ void IdMapping::add(const string& key, const string& value) {
  * @param key key whose mapping is to be removed from the map
  */
 void IdMapping::remove(const string& key) {
-    map.erase(key);
+    idMap.erase(key);
 }
 
 /**
@@ -114,7 +114,7 @@ void IdMapping::remove(const string& key) {
 void IdMapping::save(const string& fileName) const {
     ofstream outputFile;
     outputFile.open(fileName, ofstream :: out);
-    for (auto &it : map) {
+    for (auto &it : idMap) {
         outputFile << it.first << "->" << it.second;
     }
     outputFile.close();
