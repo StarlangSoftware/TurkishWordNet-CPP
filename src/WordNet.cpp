@@ -884,7 +884,7 @@ void WordNet::sameLiteralSameSenseCheck() const{
 }
 
 struct synSetSizeComparator{
-    bool operator() (const SynSet& synSetA, const SynSet& synSetB){
+    bool operator() (const SynSet& synSetA, const SynSet& synSetB) const {
         return synSetA.getSynonym().literalSize() < synSetB.getSynonym().literalSize();
     }
 };
@@ -911,7 +911,7 @@ void WordNet::sameLiteralSameSynSetCheck() const{
             }
         }
     }
-    stable_sort(synsets.begin(), synsets.end(), synSetSizeComparator());
+    ranges::stable_sort(synsets, synSetSizeComparator());
     for (const SynSet& synSet : synsets){
         cout << synSet.getDefinition();
     }
@@ -1018,7 +1018,7 @@ void WordNet::saveAsXml(const string& fileName) const {
     ofstream outFile;
     outFile.open(fileName, ofstream::out);
     outFile << "<SYNSETS>\n";
-    for (SynSet synSet : getSynSetList()){
+    for (const SynSet& synSet : getSynSetList()){
         synSet.saveAsXml(outFile);
     }
     outFile << "</SYNSETS>\n";
@@ -1044,7 +1044,7 @@ int WordNet::size() const{
 int WordNet::findPathLength(const vector<string>& pathToRootOfSynSet1, const vector<string>& pathToRootOfSynSet2) const{
     // There might not be a path between nodes, due to missing nodes. Keep track of that as well. Break when the LCS if found.
     for (int i = 0; i < pathToRootOfSynSet1.size(); i++) {
-        auto foundIndex = find(pathToRootOfSynSet2.begin(), pathToRootOfSynSet2.end(), pathToRootOfSynSet1.at(i));
+        auto foundIndex = ranges::find(pathToRootOfSynSet2, pathToRootOfSynSet1.at(i));
         if (foundIndex != pathToRootOfSynSet2.cend()) {
             // Index of two lists - 1 is equal to path length. If there is not path, return -1
             return i + foundIndex - pathToRootOfSynSet2.begin() - 1;
@@ -1090,7 +1090,7 @@ string WordNet::findLCSid(const vector<string>& pathToRootOfSynSet1, const vecto
 pair<string, int> WordNet::findLCS(const vector<string>& pathToRootOfSynSet1, const vector<string>& pathToRootOfSynSet2) const{
     for (int i = 0; i < pathToRootOfSynSet1.size(); i++) {
         string LCSid = pathToRootOfSynSet1.at(i);
-        if (find(pathToRootOfSynSet2.begin(), pathToRootOfSynSet2.end(), LCSid) != pathToRootOfSynSet2.cend()) {
+        if (ranges::find(pathToRootOfSynSet2, LCSid) != pathToRootOfSynSet2.cend()) {
             return pair<string, int>(LCSid, pathToRootOfSynSet1.size() - i + 1);
         }
     }

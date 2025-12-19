@@ -88,7 +88,7 @@ void Literal::addRelation(Relation *relation) {
  *
  * @param relation element to be removed from the list, if present
  */
-void Literal::removeRelation(Relation *relation) {
+void Literal::removeRelation(const Relation *relation) {
     for (auto it = relations.begin() ; it != relations.end(); ++it){
         if (*(*it) == *relation){
             relations.erase(it);
@@ -103,7 +103,7 @@ void Literal::removeRelation(Relation *relation) {
  * @param relation element whose presence in the list is to be tested
  * @return <tt>true</tt> if the list contains the specified element
  */
-bool Literal::containsRelation(Relation *relation) const{
+bool Literal::containsRelation(const Relation *relation) const{
     for (Relation* r : relations){
         if (*r == *relation){
             return true;

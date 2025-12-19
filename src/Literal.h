@@ -26,23 +26,23 @@ public:
     }
     Literal() = default;
     Literal(const string& name, int sense, const string& synSetId);
-    string getSynSetId() const;
-    string getName() const;
-    int getSense() const;
-    string getOrigin() const;
-    int getGroupNo() const;
+    [[nodiscard]] string getSynSetId() const;
+    [[nodiscard]] string getName() const;
+    [[nodiscard]] int getSense() const;
+    [[nodiscard]] string getOrigin() const;
+    [[nodiscard]] int getGroupNo() const;
     void setGroupNo(int groupNo);
     void setOrigin(const string& origin);
     void setSense(int sense);
     void addRelation(Relation* relation);
-    void removeRelation(Relation* relation);
-    bool containsRelation(Relation* relation) const;
-    bool containsRelationType(SemanticRelationType semanticRelationType) const;
-    Relation* getRelation(int index) const;
-    int relationSize() const;
+    void removeRelation(const Relation* relation);
+    bool containsRelation(const Relation* relation) const;
+    [[nodiscard]] bool containsRelationType(SemanticRelationType semanticRelationType) const;
+    [[nodiscard]] Relation* getRelation(int index) const;
+    [[nodiscard]] int relationSize() const;
     void setName(const string& name);
     void setSynSetId(const string& synSetId);
-    string to_string() const;
+    [[nodiscard]] string to_string() const;
     void saveAsXml(ofstream& outfile) const;
 };
 

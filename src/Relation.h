@@ -14,10 +14,10 @@ protected:
     string name;
 public:
     explicit Relation(const string& name);
-    string getName() const;
+    [[nodiscard]] string getName() const;
     void setName(const string& name);
-    virtual string getTypeAsString() const = 0;
-    virtual string to_xml() const = 0;
+    [[nodiscard]] virtual string getTypeAsString() const = 0;
+    [[nodiscard]] virtual string to_xml() const = 0;
     bool operator==(const Relation &anotherRelation) const{
         return (name == anotherRelation.name);
     }

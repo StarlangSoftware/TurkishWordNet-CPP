@@ -136,7 +136,7 @@ void SynSet::removeSameDefinitions() {
             }
         }
     }
-    if (!_definition.empty() && _definition.length() > 0){
+    if (!_definition.empty()){
         setDefinition(_definition);
     } else {
         setDefinition("NO DEFINITION");
@@ -325,7 +325,7 @@ void SynSet::addRelation(Relation *relation) {
  *
  * @param relation element to be removed from the list, if present
  */
-void SynSet::removeRelation(Relation *relation) {
+void SynSet::removeRelation(const Relation *relation) {
     for (auto it = relations.begin() ; it != relations.end(); ++it){
         if (*(*it) == *relation){
             relations.erase(it);
@@ -429,7 +429,7 @@ bool SynSet::containsSameLiteral(const SynSet& synSet) const{
  * @param relation element whose presence in the list is to be tested
  * @return <tt>true</tt> if the list contains the specified element
  */
-bool SynSet::containsRelation(Relation *relation) const{
+bool SynSet::containsRelation(const Relation *relation) const{
     for (Relation* r : relations) {
         if (*r == *relation){
             return true;
@@ -503,7 +503,7 @@ string SynSet::to_string() const{
  *
  * @param outfile BufferedWriter to write XML files
  */
-void SynSet::saveAsXml(ofstream& outfile) {
+void SynSet::saveAsXml(ofstream& outfile) const {
     outfile << "<SYNSET>";
     outfile << "<ID>" + id + "</ID>";
     synonym.saveAsXml(outfile);

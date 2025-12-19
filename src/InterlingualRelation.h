@@ -17,10 +17,10 @@ public:
     static const InterlingualDependencyType interlinguaDependencyTags[INTERLINGUAL_DEPENDENCY_SIZE];
     static InterlingualDependencyType getInterlinguaDependencyTag(const string& tag);
     InterlingualRelation(const string& name, const string& dependencyType);
-    InterlingualDependencyType getType() const;
-    string getTypeAsString() const override;
-    string to_string() const;
-    string to_xml() const override;
+    [[nodiscard]] InterlingualDependencyType getType() const;
+    [[nodiscard]] string getTypeAsString() const override;
+    [[nodiscard]] string to_string() const;
+    [[nodiscard]] string to_xml() const override;
 };
 
 

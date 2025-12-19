@@ -14,15 +14,15 @@ private:
 public:
     Synonym() = default;
     void addLiteral(const Literal& literal);
-    Literal getLiteral(int index) const;
-    Literal getLiteral(const string& name) const;
-    int literalSize() const;
-    bool contains(const Literal& literal) const;
-    bool containsLiteral(const string& literalName) const;
+    [[nodiscard]] Literal getLiteral(int index) const;
+    [[nodiscard]] Literal getLiteral(const string& name) const;
+    [[nodiscard]] int literalSize() const;
+    [[nodiscard]] bool contains(const Literal& literal) const;
+    [[nodiscard]] bool containsLiteral(const string& literalName) const;
     void removeLiteral(const Literal& toBeRemoved);
     void saveAsXml(ofstream& outfile) const;
-    string to_string() const;
-    vector<Synonym> getUniqueLiterals() const;
+    [[nodiscard]] string to_string() const;
+    [[nodiscard]] vector<Synonym> getUniqueLiterals() const;
 };
 
 

@@ -6,7 +6,6 @@
 #define WORDNET_IDMAPPING_H
 
 #include <map>
-#include <unordered_set>
 using namespace std;
 
 class IdMapping {
@@ -15,9 +14,9 @@ private:
 public:
     IdMapping();
     explicit IdMapping(const string& fileName);
-    vector<string> keySet() const;
-    string mapTo(const string& id) const;
-    string singleMap(const string& id) const;
+    [[nodiscard]] vector<string> keySet() const;
+    [[nodiscard]] string mapTo(const string& id) const;
+    [[nodiscard]] string singleMap(const string& id) const;
     void add(const string& key, const string& value);
     void remove(const string& key);
     void save(const string& fileName) const;
