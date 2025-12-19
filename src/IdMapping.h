@@ -10,7 +10,7 @@ using namespace std;
 
 class IdMapping {
 private:
-    map<string, string> map;
+    map<string, string> idMap;
 public:
     IdMapping();
     explicit IdMapping(const string& fileName);

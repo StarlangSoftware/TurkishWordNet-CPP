@@ -4,6 +4,8 @@
 
 #include "SimilarityPath.h"
 
+#include <cmath>
+
 /**
  * Class constructor that sets the wordnet and the information content hash map.
  * @param wordNet WordNet for which similarity metrics will be calculated.
@@ -23,6 +25,6 @@ double SimilarityPath::computeSimilarity(SynSet synSet1, SynSet synSet2) {
     vector<string> pathToRootOfSynSet2 = wordNet.findPathToRoot(&synSet2);
     // Find path length
     int pathLength = wordNet.findPathLength(pathToRootOfSynSet1, pathToRootOfSynSet2);
-    int maxDepth = (int)(fmax(pathToRootOfSynSet1.size(), pathToRootOfSynSet2.size()));
+    int maxDepth = (int)(::fmax(pathToRootOfSynSet1.size(), pathToRootOfSynSet2.size()));
     return 2 * maxDepth - pathLength;
 }
